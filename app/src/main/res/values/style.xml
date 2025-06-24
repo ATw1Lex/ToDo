@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ButtonStyle" parent="@android:style/Widget.Button">
+        <item name="android:layout_width">300dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:layout_marginTop">100dp</item>
+        <item name="android:fontFamily">@font/ubuntu_medium</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:backgroundTint">#8177e4</item>
+    </style>
+</resources>

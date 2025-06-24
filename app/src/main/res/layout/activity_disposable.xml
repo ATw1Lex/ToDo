@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00001B"
+    tools:context=".DisposableActivity">
+
+    <ImageButton
+        android:id="@+id/comeBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:backgroundTint="#00001B"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_round_arrow_back" />
+
+    <ListView
+        android:id="@+id/ListDailyTasks"
+        android:layout_width="300dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="20dp"
+        android:scrollbarSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comeBack" />
+
+    <EditText
+        android:id="@+id/NewTask"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:ems="8"
+        android:inputType="text"
+        android:layout_marginTop="10dp"
+        android:hint="Введите задачу"
+        android:textColor="#8177e4"
+        android:textColorHint="#8177e4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ListDailyTasks" />
+
+    <Button
+        android:id="@+id/add"
+        style="@style/ButtonStyle"
+        android:layout_width="200dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:text="Добавить Задачу"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NewTask" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="236dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="Disposable Tasks"
+        android:textColor="#8177e4"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
