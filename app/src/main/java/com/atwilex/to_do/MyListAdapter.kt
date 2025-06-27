@@ -11,7 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.*
 
-class MyListAdapter(context: Context,private val list: MutableList<DailyDbEntity>,private val tabRepository: DailyRepository, private val callback : () -> Unit) : ArrayAdapter<DailyDbEntity>(context,
+class MyListAdapter(context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit) : ArrayAdapter<DailyDbEntity>(context,
     R.layout.list_black_text, R.id.list_content, list){
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

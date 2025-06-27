@@ -11,7 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.atwilex.to_do.DependenciesDaily.dailyRepository
+import com.atwilex.to_do.AppDependencies.appRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,13 +29,13 @@ class DailyActivity : AppCompatActivity() {
         val taskList : ListView = findViewById(R.id.ListDailyTasks)
         val list = mutableListOf<DailyDbEntity>()
         val complete : TextView = findViewById(R.id.complete)
-        val adapter = MyListAdapter(this, list, dailyRepository) {
+        val adapter = MyListAdapter(this, list, appRepository) {
             complete.text = isCompleteTasks(list)
         }
         taskList.adapter = adapter
 
         CoroutineScope(Dispatchers.Main).launch {
-            val items = dailyRepository.getDailyTab()
+            val items = appRepository.getDailyTab()
             list.clear()
             list.addAll(items)
             adapter.notifyDataSetChanged()
@@ -51,7 +51,7 @@ class DailyActivity : AppCompatActivity() {
             if (newTask.text.isNotBlank()){
                 CoroutineScope(Dispatchers.Main).launch {
                     val newItem = DailyDbEntity(0, newTask.text.toString(), 0L)
-                    val id = dailyRepository.insertNewData(newItem)
+                    val id = appRepository.insertNewData(newItem)
                     list.add(newItem.copy(id = id))
                     newTask.setText("")
                     complete.text = isCompleteTasks(list)

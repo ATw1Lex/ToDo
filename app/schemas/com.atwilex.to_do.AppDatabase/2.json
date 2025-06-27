@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "ffa9bf99a01b00bc58d80b38851cb4f4",
+    "version": 2,
+    "identityHash": "c6fa04c19723dfea1431e566ba617f08",
     "entities": [
       {
         "tableName": "daily",
@@ -32,23 +32,12 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [
-          {
-            "name": "index_daily_id",
-            "unique": false,
-            "columnNames": [
-              "id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_daily_id` ON `${TABLE_NAME}` (`id`)"
-          }
-        ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ffa9bf99a01b00bc58d80b38851cb4f4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c6fa04c19723dfea1431e566ba617f08')"
     ]
   }
 }

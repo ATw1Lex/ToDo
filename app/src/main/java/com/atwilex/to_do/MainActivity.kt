@@ -13,8 +13,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        if (!DependenciesDaily.isInit()) {
-            DependenciesDaily.init(applicationContext)
+        if (!AppDependencies.isInit()) {
+            AppDependencies.init(applicationContext)
         }
 
         val buttonDaily : Button = findViewById(R.id.daily)

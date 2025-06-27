@@ -3,7 +3,7 @@ package com.atwilex.to_do
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DailyRepository(private val dailyDao : DailyDao) {
+class AppRepository(private val dailyDao : DailyDao) {
 
     suspend fun insertNewData(dailyDbEntity : DailyDbEntity) : Long{
         withContext(Dispatchers.IO) { dailyDao.insertNewData(dailyDbEntity) }
