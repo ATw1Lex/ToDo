@@ -11,14 +11,18 @@ object AppDependencies {
         applicationContext = context.applicationContext
     }
 
+    //checking
     fun isInit() : Boolean = ::applicationContext.isInitialized
 
+    //Database builder
     private val appDatabase: AppDatabase by lazy {
         Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database.db").addMigrations(
-            AppDatabase.MIGRATION12).build()
+            AppDatabase.MIGRATION23).build()
     }
 
     val dailyDao : DailyDao by lazy { appDatabase.getDailyDao() }
 
-    val appRepository : AppRepository by lazy { AppRepository(dailyDao) }
+    val disposableDao: DisposableDao by lazy { appDatabase.getDisposableDao() }
+
+    val appRepository : AppRepository by lazy { AppRepository(dailyDao, disposableDao) }
 }

@@ -5,13 +5,14 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 
+//Dao for daily tab
 @Dao
 interface DailyDao {
     @Insert(entity = DailyDbEntity::class)
     fun insertNewData(data: DailyDbEntity)
 
     @Query("DELETE FROM daily WHERE id = :tabId")
-    fun deleteTabData(tabId : Long)
+    fun removeData(tabId : Long)
 
     @Query("SELECT * FROM daily ORDER BY id DESC")
     fun getTab() : List<DailyDbEntity>

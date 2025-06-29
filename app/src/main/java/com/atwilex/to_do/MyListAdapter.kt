@@ -11,12 +11,13 @@ import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.*
 
-class MyListAdapter(context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit) : ArrayAdapter<DailyDbEntity>(context,
+class DailyListAdapter(context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit) : ArrayAdapter<DailyDbEntity>(context,
     R.layout.list_black_text, R.id.list_content, list){
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val convertViewReturn : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_black_text, parent, false)
 
+        //Initialization
         val textView: TextView = convertViewReturn.findViewById(R.id.list_content)
         val checkBox: CheckBox = convertViewReturn.findViewById(R.id.checkbox)
         val trashBin: ImageButton = convertViewReturn.findViewById(R.id.trash_bin)
@@ -25,10 +26,12 @@ class MyListAdapter(context: Context, private val list: MutableList<DailyDbEntit
         textView.text = item.name
         checkBox.isChecked = item.state == 1L
 
+
+        //Remove item from list
         trashBin.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 try { //if will exception here items will not delete from list
-                    tabRepository.removeDataById(item.id)
+                    tabRepository.removeDailyDataById(item.id)
 
                     list.removeAt(position)
                     notifyDataSetChanged()
@@ -41,14 +44,16 @@ class MyListAdapter(context: Context, private val list: MutableList<DailyDbEntit
 
         }
 
+        //Checkbox updating
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             CoroutineScope(Dispatchers.Main).launch {
                 val updatedItem = item.copy(state = if (isChecked) 1L else 0L)
-                tabRepository.updateData(updatedItem)
+                tabRepository.updateDailyData(updatedItem)
                 list[position] = updatedItem
                 callback()
             }
         }
+
         return convertViewReturn
     }
 }

@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,51 +23,59 @@ class DailyActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_daily)
 
+        //Initialization activity's elements
         val buttonComeBack : ImageButton = findViewById(R.id.comeBack)
         val buttonAdd : Button = findViewById(R.id.add)
         val newTask : EditText = findViewById(R.id.NewTask)
-
         val taskList : ListView = findViewById(R.id.ListDailyTasks)
         val list = mutableListOf<DailyDbEntity>()
         val complete : TextView = findViewById(R.id.complete)
-        val adapter = MyListAdapter(this, list, appRepository) {
-            complete.text = isCompleteTasks(list)
+        val adapter = DailyListAdapter(this, list, appRepository) {
+            complete.text = isCompletedTasks(list)
         }
         taskList.adapter = adapter
 
+        //Update list, with values from database
         CoroutineScope(Dispatchers.Main).launch {
             val items = appRepository.getDailyTab()
             list.clear()
             list.addAll(items)
             adapter.notifyDataSetChanged()
-            complete.text = isCompleteTasks(list)
+            complete.text = isCompletedTasks(list)
         }
 
+        //Return on the last activity
         buttonComeBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 
+        //Create new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
                 CoroutineScope(Dispatchers.Main).launch {
                     val newItem = DailyDbEntity(0, newTask.text.toString(), 0L)
-                    val id = appRepository.insertNewData(newItem)
+                    val id = appRepository.insertNewDailyData(newItem)
                     list.add(newItem.copy(id = id))
                     newTask.setText("")
-                    complete.text = isCompleteTasks(list)
+                    complete.text = isCompletedTasks(list)
                     adapter.notifyDataSetChanged()
                 }
+                Toast.makeText(this, "Created", Toast.LENGTH_SHORT).show()
             }
         }
 
+
+        //I don't know what is it :)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
     }
-    fun isCompleteTasks(list : List<DailyDbEntity>): String{
+
+    //function for checking completed tasks
+    fun isCompletedTasks(list : List<DailyDbEntity>): String{
         var isComplete = 0
         for (items in list){
             if(items.state == 1L) isComplete++
