@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/ic_round_arrow_back" />
 
     <ListView
-        android:id="@+id/ListDailyTasks"
+        android:id="@+id/ListDisposableTasks"
         android:layout_width="300dp"
         android:layout_height="500dp"
         android:layout_marginTop="20dp"
@@ -41,7 +41,7 @@
         android:textColorHint="#8177e4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ListDailyTasks" />
+        app:layout_constraintTop_toBottomOf="@+id/ListDisposableTasks" />
 
     <Button
         android:id="@+id/add"
@@ -64,7 +64,6 @@
         android:textColor="#8177e4"
         android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,6 +27,8 @@ class DailyActivity : AppCompatActivity() {
         val buttonComeBack : ImageButton = findViewById(R.id.comeBack)
         val buttonAdd : Button = findViewById(R.id.add)
         val newTask : EditText = findViewById(R.id.NewTask)
+
+        //Initialization List with adapter
         val taskList : ListView = findViewById(R.id.ListDailyTasks)
         val list = mutableListOf<DailyDbEntity>()
         val complete : TextView = findViewById(R.id.complete)
@@ -50,14 +52,14 @@ class DailyActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //Create new task
+        //Create a new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
                 CoroutineScope(Dispatchers.Main).launch {
                     val newItem = DailyDbEntity(0, newTask.text.toString(), 0L)
                     val id = appRepository.insertNewDailyData(newItem)
                     list.add(newItem.copy(id = id))
-                    newTask.setText("")
+                    newTask.text.clear()
                     complete.text = isCompletedTasks(list)
                     adapter.notifyDataSetChanged()
                 }
