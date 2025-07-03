@@ -9,51 +9,53 @@ import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 
-class DailyListAdapter(context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit) : ArrayAdapter<DailyDbEntity>(context,
-    R.layout.list_black_text, R.id.list_content, list){
+class DailyListAdapter(context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit)
+    : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val convertViewReturn : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_black_text, parent, false)
-
+    inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //Initialization
-        val textView: TextView = convertViewReturn.findViewById(R.id.list_content)
-        val checkBox: CheckBox = convertViewReturn.findViewById(R.id.checkbox)
-        val trashBin: ImageButton = convertViewReturn.findViewById(R.id.trash_bin)
+        val textView: TextView = itemView.findViewById(R.id.list_content)
+        val checkBox: CheckBox = itemView.findViewById(R.id.checkbox)
+        val trashBin: ImageButton = itemView.findViewById(R.id.trash_bin)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val item = list[position]
 
-        textView.text = item.name
-        checkBox.isChecked = item.state == 1L
+        holder.textView.text = item.name
+        holder.checkBox.isChecked = item.state != 0L
 
-
-        //Remove item from list
-        trashBin.setOnClickListener {
+        //Deleting elements
+        holder.trashBin.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                try { //if will exception here items will not delete from list
-                    tabRepository.removeDailyDataById(item.id)
-
-                    list.removeAt(position)
-                    notifyDataSetChanged()
-                    Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
-                    callback()
-                } catch (e: Exception){
-                    Toast.makeText(context, "Exception", Toast.LENGTH_SHORT).show()
-                }
+                //Remove item from list
+                tabRepository.removeDailyDataById(item.id)
+                list.removeAt(position)
+                notifyDataSetChanged()
+                Toast.makeText(TODO("Not yet implemented"), "Deleted", Toast.LENGTH_SHORT).show()
+                callback()
             }
-
         }
 
         //Checkbox updating
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
+        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
             CoroutineScope(Dispatchers.Main).launch {
                 val updatedItem = item.copy(state = if (isChecked) 1L else 0L)
                 tabRepository.updateDailyData(updatedItem)
                 list[position] = updatedItem
                 callback()
+                notifyDataSetChanged()
             }
         }
-
-        return convertViewReturn
     }
+
+
+    override fun getItemCount() = list.size
 }

@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,7 @@ class DailyActivity : AppCompatActivity() {
         val newTask : EditText = findViewById(R.id.NewTask)
 
         //Initialization List with adapter
-        val taskList : ListView = findViewById(R.id.ListDailyTasks)
+        val taskList : RecyclerView = findViewById(R.id.ListDailyTasks)
         val list = mutableListOf<DailyDbEntity>()
         val complete : TextView = findViewById(R.id.complete)
         val adapter = DailyListAdapter(this, list, appRepository) {
