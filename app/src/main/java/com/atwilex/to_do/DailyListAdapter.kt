@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 
-class DailyListAdapter(context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit)
+class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit)
     : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -23,7 +23,9 @@ class DailyListAdapter(context: Context, private val list: MutableList<DailyDbEn
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        TODO("Not yet implemented")
+        val inFlater = LayoutInflater.from(parent.context)
+        val itemView = inFlater.inflate(R.layout.list_black_text, parent, false)
+        return TaskViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
@@ -38,8 +40,8 @@ class DailyListAdapter(context: Context, private val list: MutableList<DailyDbEn
                 //Remove item from list
                 tabRepository.removeDailyDataById(item.id)
                 list.removeAt(position)
-                notifyDataSetChanged()
-                Toast.makeText(TODO("Not yet implemented"), "Deleted", Toast.LENGTH_SHORT).show()
+                notifyItemRemoved(position)
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
                 callback()
             }
         }
@@ -51,7 +53,7 @@ class DailyListAdapter(context: Context, private val list: MutableList<DailyDbEn
                 tabRepository.updateDailyData(updatedItem)
                 list[position] = updatedItem
                 callback()
-                notifyDataSetChanged()
+                notifyItemChanged(position)
             }
         }
     }
