@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
@@ -23,8 +22,8 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val inFlater = LayoutInflater.from(parent.context)
-        val itemView = inFlater.inflate(R.layout.list_black_text, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        val itemView = inflater.inflate(R.layout.list_black_text, parent, false)
         return TaskViewHolder(itemView)
     }
 
@@ -38,11 +37,16 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
         holder.trashBin.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 //Remove item from list
-                tabRepository.removeDailyDataById(item.id)
-                list.removeAt(position)
-                notifyItemRemoved(position)
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
-                callback()
+                try {
+                    list.removeAt(position)
+                    tabRepository.removeDailyDataById(item.id)
+                    notifyItemRemoved(position)
+                    Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+                    callback()
+                }catch (e: IndexOutOfBoundsException){
+                    Toast.makeText(context, "Slow down please!", Toast.LENGTH_SHORT).show()
+                    notifyItemRemoved(position)
+                }
             }
         }
 

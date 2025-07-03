@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +33,7 @@ class DailyActivity : AppCompatActivity() {
         val taskList : RecyclerView = findViewById(R.id.ListDailyTasks)
         val list = mutableListOf<DailyDbEntity>()
         val complete : TextView = findViewById(R.id.complete)
+        taskList.layoutManager = LinearLayoutManager(this)
         val adapter = DailyListAdapter(this, list, appRepository) {
             complete.text = isCompletedTasks(list)
         }
