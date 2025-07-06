@@ -15,6 +15,10 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
         withContext(Dispatchers.IO) { dailyDao.removeData(id) }
     }
 
+    suspend fun clearDailyTab(){
+        withContext(Dispatchers.IO) { dailyDao.clearTab() }
+    }
+
     suspend fun updateDailyData(dailyDbEntity: DailyDbEntity){
         withContext(Dispatchers.IO) { dailyDao.updateTab(dailyDbEntity) }
     }

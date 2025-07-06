@@ -14,6 +14,9 @@ interface DailyDao {
     @Query("DELETE FROM daily WHERE id = :tabId")
     fun removeData(tabId : Long)
 
+    @Query("DELETE FROM daily")
+    fun clearTab()
+
     @Query("SELECT * FROM daily ORDER BY id DESC")
     fun getTab() : List<DailyDbEntity>
 
