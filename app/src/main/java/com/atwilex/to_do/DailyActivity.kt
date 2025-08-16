@@ -1,5 +1,6 @@
 package com.atwilex.to_do
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -18,6 +19,8 @@ import com.atwilex.to_do.AppDependencies.appRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalTime
+import java.time.LocalDate
 
 @Suppress("DEPRECATION")
 class DailyActivity : AppCompatActivity() {
@@ -46,7 +49,7 @@ class DailyActivity : AppCompatActivity() {
             val items = appRepository.getDailyTab()
             list.clear()
             list.addAll(items)
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemRangeInserted(0, items.size)
             complete.text = isCompletedTasks(list)
         }
 
@@ -95,12 +98,13 @@ class DailyActivity : AppCompatActivity() {
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
                 CoroutineScope(Dispatchers.Main).launch {
-                    val newItem = DailyDbEntity(0, newTask.text.toString(), 0L)
+                    val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, list.size)
                     val id = appRepository.insertNewDailyData(newItem)
-                    list.add(newItem.copy(id = id))
+                    val newItemForList = newItem.copy(id = id)
+                    list.add(newItemForList)
                     newTask.text.clear()
                     complete.text = isCompletedTasks(list)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyItemInserted(list.indexOf(newItemForList))
                 }
                 Toast.makeText(this, "Created", Toast.LENGTH_SHORT).show()
             }
@@ -114,6 +118,11 @@ class DailyActivity : AppCompatActivity() {
             insets
         }
     }
+
+    /*private fun dailyReset(context: Context){
+        val now = LocalTime.now()
+        val midnight = now.toLocalDate().plusDays(1).atStartOfDay()
+    }*/
 
     //function for checking completed tasks
     fun isCompletedTasks(list : List<DailyDbEntity>): String{

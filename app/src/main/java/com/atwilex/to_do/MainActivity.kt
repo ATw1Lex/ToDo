@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.atwilex.to_do.resetSchedule
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
         if (!AppDependencies.isInit()) {
             AppDependencies.init(applicationContext)
         }
+
+        resetSchedule(this)
 
         val buttonDaily : Button = findViewById(R.id.daily)
         val buttonDisposable : Button = findViewById(R.id.disposable)

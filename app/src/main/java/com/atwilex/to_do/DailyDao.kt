@@ -2,7 +2,9 @@ package com.atwilex.to_do
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 
 //Dao for daily tab
@@ -11,15 +13,18 @@ interface DailyDao {
     @Insert(entity = DailyDbEntity::class)
     fun insertNewData(data: DailyDbEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllTasks(tasks : List<DailyDbEntity>)
+
     @Query("DELETE FROM daily WHERE id = :tabId")
     fun removeData(tabId : Long)
 
-    @Query("DELETE FROM daily")
-    fun clearTab()
-
-    @Query("SELECT * FROM daily ORDER BY id DESC")
+    @Query("SELECT * FROM daily ORDER BY position ASC")
     fun getTab() : List<DailyDbEntity>
 
     @Update
-    fun updateTab(tabDbEntity: DailyDbEntity)
+    fun updateTab(dailyDbEntity: DailyDbEntity)
+
+    @Query("UPDATE daily SET state = 0")
+    fun checkboxReset()
 }

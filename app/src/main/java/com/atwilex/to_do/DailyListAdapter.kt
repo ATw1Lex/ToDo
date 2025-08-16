@@ -31,7 +31,7 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
 
     //Set on click listeners
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        val item = list[position]
+        var item = list[position]
 
         holder.textView.text = item.name
         holder.checkBox.isChecked = item.state != 0L
@@ -41,14 +41,17 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
             CoroutineScope(Dispatchers.Main).launch {
                 //Remove item from list, but with anti-bag defense
                 try {
-                    list.removeAt(position)
+                    val actualPosition = holder.adapterPosition
+                    item = list[actualPosition]
+                    list.removeAt(actualPosition)
                     tabRepository.removeDailyDataById(item.id)
-                    notifyItemRemoved(position)
+                    notifyItemRemoved(actualPosition)
+                    //Update database
+                    positionChecking()
                     Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
                     callback()
-                }catch (e: IndexOutOfBoundsException){
+                }catch (e: Exception){
                     Toast.makeText(context, "Slow down please!", Toast.LENGTH_SHORT).show()
-                    notifyItemRemoved(position)
                 }
             }
         }
@@ -58,14 +61,15 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
             CoroutineScope(Dispatchers.Main).launch {
                 //Update checkbox, but with anti-bag defense
                 try {
+                    val actualPosition = holder.adapterPosition
+                    item = list[actualPosition]
                     val updatedItem = item.copy(state = if (isChecked) 1L else 0L)
+                    list[actualPosition] = updatedItem
                     tabRepository.updateDailyData(updatedItem)
-                    list[position] = updatedItem
+                    notifyItemChanged(actualPosition)
                     callback()
-                    notifyItemChanged(position)
-                }catch (e: IndexOutOfBoundsException){
+                }catch (e: Exception){
                     Toast.makeText(context, "Slow down please!", Toast.LENGTH_SHORT).show()
-                    notifyItemRemoved(position)
                 }
             }
         }
@@ -79,23 +83,26 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
 
         //Swapping
         if(fromPosition < toPosition){
-            for(position in fromPosition until toPosition){
-                Collections.swap(list, position, position+1)
-            }
+            Collections.swap(list, fromPosition, toPosition)
         }else {
-            for(position in toPosition until fromPosition){
-                Collections.swap(list, position, position-1)
-            }
+            Collections.swap(list, toPosition, fromPosition)
         }
         notifyItemMoved(fromPosition, toPosition)
 
         //Update database
-        CoroutineScope(Dispatchers.Main).launch {
-            tabRepository.clearDailyTab()
-            for (position in list.indices){
-                tabRepository.insertNewDailyData(list[position])
+        positionChecking()
+        Toast.makeText(context, "Complete", Toast.LENGTH_SHORT).show()
+    }
+
+    fun positionChecking(){
+        for(item in list){
+            if(item.position == list.indexOf(item)) continue
+            val newItem = item.copy(position = list.indexOf(item))
+            list[list.indexOf(item)] = newItem
+            CoroutineScope(Dispatchers.Main).launch {
+                tabRepository.updateDailyData(newItem)
             }
-            notifyDataSetChanged()
+            notifyItemChanged(list.indexOf(item))
         }
     }
 }

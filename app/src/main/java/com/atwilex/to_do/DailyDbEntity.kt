@@ -1,5 +1,6 @@
 package com.atwilex.to_do
 
+import androidx.constraintlayout.motion.widget.KeyPosition
 import androidx.room.*
 
 //Entity for daily tab
@@ -7,5 +8,8 @@ import androidx.room.*
 data class DailyDbEntity(
     @PrimaryKey(autoGenerate = true) val id : Long,
     val name: String,
-    val state: Long
+    val state: Long,
+
+    @ColumnInfo(defaultValue = "0")
+    val position: Int
 )
