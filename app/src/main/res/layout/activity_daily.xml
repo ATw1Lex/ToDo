@@ -12,8 +12,8 @@
         android:id="@+id/comeBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#00001B"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,10 +33,10 @@
         android:id="@+id/NewTask"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:ems="8"
-        android:inputType="text"
         android:layout_marginTop="10dp"
+        android:ems="8"
         android:hint="Введите задачу"
+        android:inputType="text"
         android:textColor="#8177e4"
         android:textColorHint="#8177e4"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,25 +59,44 @@
         android:id="@+id/title"
         android:layout_width="152dp"
         android:layout_height="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="24dp"
         android:text="Daily Tasks"
         android:textColor="#8177e4"
         android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/ListDailyTasks"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/complete"
         android:layout_width="96dp"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:textSize="35dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:text=""
+        android:textSize="35dp"
+        app:layout_constraintBottom_toTopOf="@+id/ListDailyTasks"
         app:layout_constraintStart_toEndOf="@+id/title"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#8177e4"
+        android:fontFamily=">@font/ubuntu_medium"
+        android:text="Edit"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

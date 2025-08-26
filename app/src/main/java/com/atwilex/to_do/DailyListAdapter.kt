@@ -15,6 +15,12 @@ import java.util.Collections
 class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit)
     : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
+    var isEdit = false
+        set(value){
+            field = value
+            notifyDataSetChanged()
+        }
+
     //Initialization
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.list_content)
@@ -35,6 +41,12 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
 
         holder.textView.text = item.name
         holder.checkBox.isChecked = item.state != 0L
+
+        if (isEdit){
+            holder.trashBin.visibility = View.VISIBLE
+        } else {
+            holder.trashBin.visibility = View.GONE
+        }
 
         //Deleting elements
         holder.trashBin.setOnClickListener {
@@ -91,7 +103,6 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
 
         //Update database
         positionChecking()
-        Toast.makeText(context, "Complete", Toast.LENGTH_SHORT).show()
     }
 
     fun positionChecking(){

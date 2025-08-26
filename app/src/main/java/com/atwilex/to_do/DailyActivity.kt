@@ -3,6 +3,7 @@ package com.atwilex.to_do
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -19,8 +20,7 @@ import com.atwilex.to_do.AppDependencies.appRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalTime
-import java.time.LocalDate
+
 
 @Suppress("DEPRECATION")
 class DailyActivity : AppCompatActivity() {
@@ -31,6 +31,7 @@ class DailyActivity : AppCompatActivity() {
 
         //Initialization activity's elements
         val buttonComeBack : ImageButton = findViewById(R.id.comeBack)
+        val buttonEdit : Button = findViewById(R.id.edit_button)
         val buttonAdd : Button = findViewById(R.id.add)
         val newTask : EditText = findViewById(R.id.NewTask)
 
@@ -88,6 +89,12 @@ class DailyActivity : AppCompatActivity() {
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(taskList)
 
+        //Initialization edit's elements
+        var isEdit = false
+        adapter.isEdit = false
+        buttonAdd.visibility = View.GONE
+        newTask.visibility = View.GONE
+
         //Return on the last activity
         buttonComeBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -110,6 +117,20 @@ class DailyActivity : AppCompatActivity() {
             }
         }
 
+        //Change activity mode
+        buttonEdit.setOnClickListener {
+            if(isEdit){
+                buttonAdd.visibility = View.GONE
+                newTask.visibility = View.GONE
+                isEdit = false
+                adapter.isEdit = false
+            } else {
+                buttonAdd.visibility = View.VISIBLE
+                newTask.visibility = View.VISIBLE
+                isEdit = true
+                adapter.isEdit = true
+            }
+        }
 
         //I don't know what is it :)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -119,10 +140,6 @@ class DailyActivity : AppCompatActivity() {
         }
     }
 
-    /*private fun dailyReset(context: Context){
-        val now = LocalTime.now()
-        val midnight = now.toLocalDate().plusDays(1).atStartOfDay()
-    }*/
 
     //function for checking completed tasks
     fun isCompletedTasks(list : List<DailyDbEntity>): String{
