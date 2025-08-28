@@ -10,9 +10,12 @@ class ResetWorker(context: Context, workerParameters: WorkerParameters) : Corout
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
+                //get Repository
                 val repository = AppDependencies.appRepository
-
+                //Reset Checkboxes
                 repository.checkboxReset()
+
+                Runtime.getRuntime().exit(0)
 
                 Result.success()
             }catch (e : Exception){
