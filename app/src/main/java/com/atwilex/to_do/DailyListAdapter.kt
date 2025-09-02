@@ -44,7 +44,8 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
 
         if (isEdit){
             holder.trashBin.visibility = View.VISIBLE
-        } else {
+        }
+        else {
             holder.trashBin.visibility = View.GONE
         }
 
@@ -96,7 +97,8 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
         //Swapping
         if(fromPosition < toPosition){
             Collections.swap(list, fromPosition, toPosition)
-        }else {
+        }
+        else {
             Collections.swap(list, toPosition, fromPosition)
         }
         notifyItemMoved(fromPosition, toPosition)

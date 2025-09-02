@@ -12,9 +12,18 @@ class ResetWorker(context: Context, workerParameters: WorkerParameters) : Corout
             try {
                 //get Repository
                 val repository = AppDependencies.appRepository
+                val states = repository.getState()
+                if(states.isEmpty()){
+                    repository.incrementStreak()
+                }
+                else {
+                    repository.zeroingStreak()
+                }
+
                 //Reset Checkboxes
                 repository.checkboxReset()
 
+                //Reload
                 Runtime.getRuntime().exit(0)
 
                 Result.success()

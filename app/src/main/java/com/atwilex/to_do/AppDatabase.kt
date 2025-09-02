@@ -8,20 +8,21 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 //database init
 @Database(
-    version = 3,
+    version = 4,
     exportSchema = true,
-    entities = [DailyDbEntity::class, DisposableDbEntity::class],
-    autoMigrations = [AutoMigration(from = 2, to = 3)]
+    entities = [DailyDbEntity::class, DisposableDbEntity::class, AdditionalDbEntity::class],
+    autoMigrations = [AutoMigration(from = 3, to = 4)]
 )
 abstract class AppDatabase : RoomDatabase(){
     //Database migration
     companion object{
-        val MIGRATION23 = object : Migration(2, 3) {
+        val MIGRATION34 = object : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("CREATE TABLE IF NOT EXISTS disposable (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL)")
+                db.execSQL("CREATE TABLE IF NOT EXISTS additional (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, streak INTEGER NOT NULL DEFAULT 0)")
             }
         }
     }
     abstract fun getDailyDao() : DailyDao
     abstract fun getDisposableDao() : DisposableDao
+    abstract fun getAdditionalDao() : AdditionalDao
 }

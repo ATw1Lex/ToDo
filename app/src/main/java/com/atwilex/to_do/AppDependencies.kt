@@ -17,12 +17,14 @@ object AppDependencies {
     //Database builder
     private val appDatabase: AppDatabase by lazy {
         Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database.db").addMigrations(
-            AppDatabase.MIGRATION23).build()
+            AppDatabase.MIGRATION34).build()
     }
 
     val dailyDao : DailyDao by lazy { appDatabase.getDailyDao() }
 
     val disposableDao: DisposableDao by lazy { appDatabase.getDisposableDao() }
 
-    val appRepository : AppRepository by lazy { AppRepository(dailyDao, disposableDao) }
+    val additionalDao : AdditionalDao by lazy { appDatabase.getAdditionalDao() }
+
+    val appRepository : AppRepository by lazy { AppRepository(dailyDao, disposableDao, additionalDao) }
 }

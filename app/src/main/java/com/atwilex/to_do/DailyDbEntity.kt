@@ -1,6 +1,5 @@
 package com.atwilex.to_do
 
-import androidx.constraintlayout.motion.widget.KeyPosition
 import androidx.room.*
 
 //Entity for daily tab

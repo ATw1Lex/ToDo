@@ -3,7 +3,8 @@ package com.atwilex.to_do
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AppRepository(private val dailyDao : DailyDao, private val disposableDao : DisposableDao) {
+class AppRepository(private val dailyDao : DailyDao, private val disposableDao : DisposableDao,
+                    private val additionalDao: AdditionalDao) {
 
     //Daily Tab's functions
     suspend fun insertNewDailyData(dailyDbEntity : DailyDbEntity) : Long{
@@ -26,6 +27,31 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
     suspend fun getDailyTab() : List<DailyDbEntity>{
         return withContext(Dispatchers.IO) { dailyDao.getTab() }
     }
+
+    //Fun for streak system
+    suspend fun getState() : List<Boolean> {
+        return withContext(Dispatchers.IO) { dailyDao.getState() }
+    }
+
+
+    //Additional functions
+
+    suspend fun insertStreak(additionalDbEntity: AdditionalDbEntity){
+        withContext(Dispatchers.IO) { additionalDao.insertStreak(additionalDbEntity) }
+    }
+
+    suspend fun getStreak() : AdditionalDbEntity{
+        return withContext(Dispatchers.IO) { additionalDao.getStreak() }
+    }
+
+    suspend fun zeroingStreak(){
+        withContext(Dispatchers.IO) { additionalDao.zeroingStreak() }
+    }
+
+    suspend fun incrementStreak(){
+        withContext(Dispatchers.IO) { additionalDao.incrementStreak() }
+    }
+
 
     //Disposable Tab's functions
     suspend fun insertNewDisposableData(disposableDbEntity: DisposableDbEntity) : Long{

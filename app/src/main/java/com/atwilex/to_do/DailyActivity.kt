@@ -1,6 +1,5 @@
 package com.atwilex.to_do
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,12 +12,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -29,11 +27,13 @@ class DailyActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_daily)
 
+
         //Initialization activity's elements
         val buttonComeBack : ImageButton = findViewById(R.id.comeBack)
         val buttonEdit : Button = findViewById(R.id.edit_button)
         val buttonAdd : Button = findViewById(R.id.add)
         val newTask : EditText = findViewById(R.id.NewTask)
+
 
         //Initialization List with adapter
         val taskList : RecyclerView = findViewById(R.id.ListDailyTasks)
@@ -45,8 +45,13 @@ class DailyActivity : AppCompatActivity() {
         }
         taskList.adapter = adapter
 
-        //Update list, with values from database
-        CoroutineScope(Dispatchers.Main).launch {
+
+        //Streak
+        val streak : TextView = findViewById(R.id.streak)
+
+        //Update list, streak with values from database
+        lifecycleScope.launch {
+            streak.text = appRepository.getStreak().streak.toString()
             val items = appRepository.getDailyTab()
             list.clear()
             list.addAll(items)
@@ -54,6 +59,8 @@ class DailyActivity : AppCompatActivity() {
             complete.text = isCompletedTasks(list)
         }
 
+
+        //Swapping in list
         val itemTouchHelperCallback = object : ItemTouchHelper.Callback() {
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -89,22 +96,25 @@ class DailyActivity : AppCompatActivity() {
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(taskList)
 
-        //Initialization edit's elements
+
+        //Initialization edit's mode elements
         var isEdit = false
         adapter.isEdit = false
         buttonAdd.visibility = View.GONE
         newTask.visibility = View.GONE
 
-        //Return on the last activity
+
+        //Return on the main activity
         buttonComeBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 
+
         //Create a new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
-                CoroutineScope(Dispatchers.Main).launch {
+                lifecycleScope.launch {
                     val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, list.size)
                     val id = appRepository.insertNewDailyData(newItem)
                     val newItemForList = newItem.copy(id = id)
@@ -117,14 +127,15 @@ class DailyActivity : AppCompatActivity() {
             }
         }
 
-        //Change activity mode
+
+        //Change daily mode
         buttonEdit.setOnClickListener {
-            if(isEdit){
+            if(isEdit){ //Update to Use mode
                 buttonAdd.visibility = View.GONE
                 newTask.visibility = View.GONE
                 isEdit = false
                 adapter.isEdit = false
-            } else {
+            } else { //Update to Edit mode
                 buttonAdd.visibility = View.VISIBLE
                 newTask.visibility = View.VISIBLE
                 isEdit = true
