@@ -123,7 +123,7 @@ class DailyActivity : AppCompatActivity() {
                     complete.text = isCompletedTasks(list)
                     adapter.notifyItemInserted(list.indexOf(newItemForList))
                 }
-                Toast.makeText(this, "Created", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.Message_Created), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -142,6 +142,7 @@ class DailyActivity : AppCompatActivity() {
                 adapter.isEdit = true
             }
         }
+
 
         //I don't know what is it :)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

@@ -61,10 +61,10 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
                     notifyItemRemoved(actualPosition)
                     //Update database
                     positionChecking()
-                    Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.Message_Deleted), Toast.LENGTH_SHORT).show()
                     callback()
                 }catch (e: Exception){
-                    Toast.makeText(context, "Slow down please!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -82,7 +82,7 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
                     notifyItemChanged(actualPosition)
                     callback()
                 }catch (e: Exception){
-                    Toast.makeText(context, "Slow down please!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
                 }
             }
         }

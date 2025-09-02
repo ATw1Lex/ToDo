@@ -11,7 +11,7 @@
     <Button
         style="@style/ButtonStyle"
         android:id="@+id/daily"
-        android:text="Daily Tasks"
+        android:text="@string/Daily_Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +19,7 @@
     <Button
         style="@style/ButtonStyle"
         android:id="@+id/disposable"
-        android:text="Disposable Tasks"
+        android:text="@string/Disposable_Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/daily" />
@@ -27,7 +27,7 @@
     <Button
         style="@style/ButtonStyle"
         android:id="@+id/global"
-        android:text="Global Tasks"
+        android:text="@string/Global_Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/disposable"
@@ -37,7 +37,7 @@
         android:id="@+id/button_reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reset"
+        android:text="@string/Worker_Test_Button"
         app:layout_constraintBottom_toTopOf="@+id/daily"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

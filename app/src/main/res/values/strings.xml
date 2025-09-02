@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">To-do</string>
+
+    //Daily Activity
+    <string name="Edit_Button">Edit</string>
+    <string name="Daily_Title">Daily Tasks</string>
+    <string name="Add_Button">Add Task</string>
+    <string name="Enter_Hint">Enter Task</string>
+
+    //Main Activity
+    <string name="Daily_Button">Daily Activity</string>
+    <string name="Disposable_Button">Disposable Activity</string>
+    <string name="Global_Button">Global Activity</string>
+    <string name="Worker_Test_Button">Reset</string>
+
+    //Messages
+    <string name="Message_Created">Created</string>
+    <string name="Message_Deleted">Deleted</string>
+    <string name="Message_Complete">Complete</string>
+    <string name="Message_Slow_Down">Slow Down Please!</string>
 </resources>
