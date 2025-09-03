@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -40,9 +41,18 @@ class DailyActivity : AppCompatActivity() {
         val list = mutableListOf<DailyDbEntity>()
         val complete : TextView = findViewById(R.id.complete)
         taskList.layoutManager = LinearLayoutManager(this)
-        val adapter = DailyListAdapter(this, list, appRepository) {
-            complete.text = isCompletedTasks(list)
-        }
+
+        //Initialization var for modes
+        var isEdit = false
+
+        //Adapter initialization
+        val adapter = DailyListAdapter(this, list, appRepository,
+            //Callback 1, checking completed tasks
+            {complete.text = isCompletedTasks(list)},
+            //Callback 2, checking mode on click
+            {if (isEdit){ Toast.makeText(this, "Mode is Edit", Toast.LENGTH_SHORT).show() }
+            else { Toast.makeText(this, "Mode isn't Edit", Toast.LENGTH_SHORT).show() } })
+
         taskList.adapter = adapter
 
 
@@ -51,7 +61,12 @@ class DailyActivity : AppCompatActivity() {
 
         //Update list, streak with values from database
         lifecycleScope.launch {
-            streak.text = appRepository.getStreak().streak.toString()
+            try {
+                streak.text = appRepository.getStreak().streak.toString()
+            } catch (e : NullPointerException){
+                appRepository.insertStreak(AdditionalDbEntity(1L, 0))
+                streak.text = appRepository.getStreak().streak.toString()
+            }
             val items = appRepository.getDailyTab()
             list.clear()
             list.addAll(items)
@@ -98,7 +113,7 @@ class DailyActivity : AppCompatActivity() {
 
 
         //Initialization edit's mode elements
-        var isEdit = false
+        isEdit = false
         adapter.isEdit = false
         buttonAdd.visibility = View.GONE
         newTask.visibility = View.GONE

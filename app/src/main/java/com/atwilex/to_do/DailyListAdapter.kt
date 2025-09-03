@@ -11,8 +11,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import java.util.Collections
+import javax.security.auth.callback.Callback
 
-class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback : () -> Unit)
+class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback1 : () -> Unit, private val callback2 : () -> Unit)
     : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
     var isEdit = false
@@ -49,6 +50,13 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
             holder.trashBin.visibility = View.GONE
         }
 
+        //Edit textView's title
+        holder.textView.setOnClickListener {
+            callback2()
+            /*val actualPosition = holder.adapterPosition
+            item = list[actualPosition]*/
+        }
+
         //Deleting elements
         holder.trashBin.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
@@ -62,7 +70,7 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
                     //Update database
                     positionChecking()
                     Toast.makeText(context, context.getString(R.string.Message_Deleted), Toast.LENGTH_SHORT).show()
-                    callback()
+                    callback1()
                 }catch (e: Exception){
                     Toast.makeText(context, context.getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
                 }
@@ -80,7 +88,7 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
                     list[actualPosition] = updatedItem
                     tabRepository.updateDailyData(updatedItem)
                     notifyItemChanged(actualPosition)
-                    callback()
+                    callback1()
                 }catch (e: Exception){
                     Toast.makeText(context, context.getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
                 }
