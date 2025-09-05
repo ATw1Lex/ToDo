@@ -6,7 +6,7 @@ import androidx.room.*
 @Entity(tableName = "daily")
 data class DailyDbEntity(
     @PrimaryKey(autoGenerate = true) val id : Long,
-    val name: String,
+    var name: String,
     val state: Long,
 
     @ColumnInfo(defaultValue = "0")

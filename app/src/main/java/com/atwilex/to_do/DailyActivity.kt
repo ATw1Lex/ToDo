@@ -2,6 +2,7 @@ package com.atwilex.to_do
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -17,8 +18,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.zip.Inflater
 
 
 @Suppress("DEPRECATION")
@@ -50,8 +53,39 @@ class DailyActivity : AppCompatActivity() {
             //Callback 1, checking completed tasks
             {complete.text = isCompletedTasks(list)},
             //Callback 2, checking mode on click
-            {if (isEdit){ Toast.makeText(this, "Mode is Edit", Toast.LENGTH_SHORT).show() }
-            else { Toast.makeText(this, "Mode isn't Edit", Toast.LENGTH_SHORT).show() } })
+            {dailyDbEntity, ->
+                if (isEdit){
+                    Toast.makeText(this, "Mode is Edit", Toast.LENGTH_SHORT).show()
+
+                    val inflater = LayoutInflater.from(this)
+
+                    val dialogView = inflater.inflate(R.layout.dialog_edit_task, null)
+
+                    val editText = dialogView.findViewById<EditText>(R.id.renameTaskEditText)
+
+                    editText.setText(dailyDbEntity.name)
+
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle(getString(R.string.Dialog_title))
+                        .setView(dialogView)
+                        .setPositiveButton(getString(R.string.Rename_Edit_Button))
+                        { dialog, _ ->
+                            val newTaskName = editText.text.toString()
+                            if(newTaskName.isNotEmpty()){
+                                lifecycleScope.launch {
+                                    appRepository.updateDailyData(dailyDbEntity.copy(name = newTaskName))
+                                }
+                                val index = list.indexOfFirst { it.id == dailyDbEntity.id }
+                                if(index != -1){
+                                    list[index].name = newTaskName
+                                }
+                                dialog.dismiss()
+                            }
+                        }
+                        .setNegativeButton(getString(R.string.Rename_Cancel_Button)) { dialog, _ -> dialog.dismiss() }
+                        .show()
+                }
+            })
 
         taskList.adapter = adapter
 
@@ -166,7 +200,6 @@ class DailyActivity : AppCompatActivity() {
             insets
         }
     }
-
 
     //function for checking completed tasks
     fun isCompletedTasks(list : List<DailyDbEntity>): String{

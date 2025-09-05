@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 import java.util.Collections
 import javax.security.auth.callback.Callback
 
-class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback1 : () -> Unit, private val callback2 : () -> Unit)
+class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback1 : () -> Unit, private val callback2 : (DailyDbEntity) -> Unit)
     : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
     var isEdit = false
@@ -52,9 +52,8 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
 
         //Edit textView's title
         holder.textView.setOnClickListener {
-            callback2()
-            /*val actualPosition = holder.adapterPosition
-            item = list[actualPosition]*/
+            callback2(list[holder.adapterPosition])
+            notifyDataSetChanged()
         }
 
         //Deleting elements

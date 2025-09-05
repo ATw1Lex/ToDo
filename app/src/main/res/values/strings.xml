@@ -6,6 +6,10 @@
     <string name="Daily_Title">Daily Tasks</string>
     <string name="Add_Button">Add Task</string>
     <string name="Enter_Hint">Enter Task</string>
+    //Daily dialog
+    <string name="Dialog_title">Edit task name</string>
+    <string name="Rename_Edit_Button">Edit</string>
+    <string name="Rename_Cancel_Button">Cancel</string>
 
     //Main Activity
     <string name="Daily_Button">Daily Activity</string>
