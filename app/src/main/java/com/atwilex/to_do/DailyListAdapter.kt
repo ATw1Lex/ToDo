@@ -11,15 +11,17 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import java.util.Collections
-import javax.security.auth.callback.Callback
 
-class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val tabRepository: AppRepository, private val callback1 : () -> Unit, private val callback2 : (DailyDbEntity) -> Unit)
+class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val appRepository: AppRepository,
+                       private val callback1 : () -> Unit,
+                       private val callback2 : (DailyDbEntity) -> Unit,
+                       private val callback3 : (Int) -> Unit)
     : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
     var isEdit = false
         set(value){
             field = value
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0, list.size)
         }
 
     //Initialization
@@ -53,30 +55,14 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
         //Edit textView's title
         holder.textView.setOnClickListener {
             callback2(list[holder.adapterPosition])
-            notifyDataSetChanged()
         }
 
         //Deleting elements
         holder.trashBin.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                //Remove item from list, but with anti-bag defense
-                try {
-                    val actualPosition = holder.adapterPosition
-                    item = list[actualPosition]
-                    list.removeAt(actualPosition)
-                    tabRepository.removeDailyDataById(item.id)
-                    notifyItemRemoved(actualPosition)
-                    //Update database
-                    positionChecking()
-                    Toast.makeText(context, context.getString(R.string.Message_Deleted), Toast.LENGTH_SHORT).show()
-                    callback1()
-                }catch (e: Exception){
-                    Toast.makeText(context, context.getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
-                }
-            }
+            callback3(holder.adapterPosition)
         }
 
-        //Checkbox updating
+        //Checkbox updating NEED UPDATE
         holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
             CoroutineScope(Dispatchers.Main).launch {
                 //Update checkbox, but with anti-bag defense
@@ -85,7 +71,7 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
                     item = list[actualPosition]
                     val updatedItem = item.copy(state = if (isChecked) 1L else 0L)
                     list[actualPosition] = updatedItem
-                    tabRepository.updateDailyData(updatedItem)
+                    appRepository.updateDailyData(updatedItem)
                     notifyItemChanged(actualPosition)
                     callback1()
                 }catch (e: Exception){
@@ -98,7 +84,7 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
     //Return list size
     override fun getItemCount() = list.size
 
-    //Class for transfer the list's item between other items
+    //Class for transfer the list's item between other items NEED UPDATE
     fun onItemMove(fromPosition : Int, toPosition : Int){
 
         //Swapping
@@ -114,13 +100,14 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
         positionChecking()
     }
 
+    //NEED UPDATE
     fun positionChecking(){
         for(item in list){
             if(item.position == list.indexOf(item)) continue
             val newItem = item.copy(position = list.indexOf(item))
             list[list.indexOf(item)] = newItem
             CoroutineScope(Dispatchers.Main).launch {
-                tabRepository.updateDailyData(newItem)
+                appRepository.updateDailyData(newItem)
             }
             notifyItemChanged(list.indexOf(item))
         }

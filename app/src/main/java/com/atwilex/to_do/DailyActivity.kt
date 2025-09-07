@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.zip.Inflater
 
 
 @Suppress("DEPRECATION")
@@ -48,15 +48,28 @@ class DailyActivity : AppCompatActivity() {
         //Initialization var for modes
         var isEdit = false
 
+        //Late initialization to update adapter in adapter constructor
+        lateinit var adapter : DailyListAdapter
+
+        //Lambda for update completed tasks
+        val isCompleted = {complete.text = isCompletedTasks(list)}
+        //Lambda for update positions in list
+        val positionsUpdate = {
+            for(item in list){
+                if(item.position == list.indexOf(item)) continue
+                val newItem = item.copy(position = list.indexOf(item))
+                list[list.indexOf(item)] = newItem
+                lifecycleScope.launch { appRepository.updateDailyData(newItem) }
+                adapter.notifyItemChanged(list.indexOf(item))
+            }}
+
         //Adapter initialization
-        val adapter = DailyListAdapter(this, list, appRepository,
-            //Callback 1, checking completed tasks
-            {complete.text = isCompletedTasks(list)},
-            //Callback 2, checking mode on click
+        adapter = DailyListAdapter(this, list, appRepository,
+            //Callback 1 checking completed tasks
+            {isCompleted()},
+            //Callback 2 checking mode on click
             {dailyDbEntity, ->
                 if (isEdit){
-                    Toast.makeText(this, "Mode is Edit", Toast.LENGTH_SHORT).show()
-
                     val inflater = LayoutInflater.from(this)
 
                     val dialogView = inflater.inflate(R.layout.dialog_edit_task, null)
@@ -74,10 +87,11 @@ class DailyActivity : AppCompatActivity() {
                             if(newTaskName.isNotEmpty()){
                                 lifecycleScope.launch {
                                     appRepository.updateDailyData(dailyDbEntity.copy(name = newTaskName))
-                                }
-                                val index = list.indexOfFirst { it.id == dailyDbEntity.id }
-                                if(index != -1){
-                                    list[index].name = newTaskName
+                                    val items = appRepository.getDailyTab()
+                                    list.clear()
+                                    list.addAll(items)
+                                    //edit adapter notify
+                                    adapter.notifyDataSetChanged()
                                 }
                                 dialog.dismiss()
                             }
@@ -85,31 +99,55 @@ class DailyActivity : AppCompatActivity() {
                         .setNegativeButton(getString(R.string.Rename_Cancel_Button)) { dialog, _ -> dialog.dismiss() }
                         .show()
                 }
-            })
+            },
+            //Callback 3 deleting elements
+            {actualPosition ->
+                    try {
+                        lifecycleScope.launch {
+                            val item = list[actualPosition]
+                            list.removeAt(actualPosition)
+                            appRepository.removeDailyDataById(item.id)
+                            adapter.notifyItemRemoved(actualPosition)
+                        }
+                        //Update database
+                        positionsUpdate()
+                        Toast.makeText(this, getString(R.string.Message_Deleted), Toast.LENGTH_SHORT).show()
+                        isCompleted()
+                    }catch (e: Exception){
+                        Toast.makeText(this, getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
+                    }
+            }
+        )
 
+        //Set up adapter
         taskList.adapter = adapter
-
 
         //Streak
         val streak : TextView = findViewById(R.id.streak)
 
         //Update list, streak with values from database
         lifecycleScope.launch {
+            //If streak is existing
             try {
                 streak.text = appRepository.getStreak().streak.toString()
+            //If streak isn't existing
             } catch (e : NullPointerException){
                 appRepository.insertStreak(AdditionalDbEntity(1L, 0))
                 streak.text = appRepository.getStreak().streak.toString()
             }
+            //Get Items
             val items = appRepository.getDailyTab()
+            //Clear + Add new items
             list.clear()
             list.addAll(items)
+            //Adapter update
             adapter.notifyItemRangeInserted(0, items.size)
-            complete.text = isCompletedTasks(list)
+            //Completed tasks update
+            isCompleted
         }
 
 
-        //Swapping in list
+        //Swapping logic in list
         val itemTouchHelperCallback = object : ItemTouchHelper.Callback() {
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -142,6 +180,7 @@ class DailyActivity : AppCompatActivity() {
                 viewHolder.itemView.alpha = 1.0f
             }
         }
+        //Swapping logic set up
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(taskList)
 
@@ -169,8 +208,10 @@ class DailyActivity : AppCompatActivity() {
                     val newItemForList = newItem.copy(id = id)
                     list.add(newItemForList)
                     newTask.text.clear()
-                    complete.text = isCompletedTasks(list)
+                    //Adapter update
                     adapter.notifyItemInserted(list.indexOf(newItemForList))
+                    //Completed update
+                    isCompleted()
                 }
                 Toast.makeText(this, getString(R.string.Message_Created), Toast.LENGTH_SHORT).show()
             }
