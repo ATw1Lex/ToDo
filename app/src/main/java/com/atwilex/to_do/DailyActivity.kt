@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -31,13 +29,11 @@ class DailyActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_daily)
 
-
         //Initialization activity's elements
         val buttonComeBack : ImageButton = findViewById(R.id.comeBack)
         val buttonEdit : Button = findViewById(R.id.edit_button)
         val buttonAdd : Button = findViewById(R.id.add)
         val newTask : EditText = findViewById(R.id.NewTask)
-
 
         //Initialization List with adapter
         val taskList : RecyclerView = findViewById(R.id.ListDailyTasks)
@@ -45,10 +41,10 @@ class DailyActivity : AppCompatActivity() {
         val complete : TextView = findViewById(R.id.complete)
         taskList.layoutManager = LinearLayoutManager(this)
 
-        //Initialization var for modes
+        //Initialization isEdit for modes
         var isEdit = false
 
-        //Late initialization to update adapter in adapter constructor
+        //Late initialization to use update adapter in adapter constructor
         lateinit var adapter : DailyListAdapter
 
         //Lambda for update completed tasks
@@ -64,11 +60,9 @@ class DailyActivity : AppCompatActivity() {
             }}
 
         //Adapter initialization
-        adapter = DailyListAdapter(this, list, appRepository,
-            //Callback 1 checking completed tasks
-            {isCompleted()},
-            //Callback 2 checking mode on click
-            {dailyDbEntity, ->
+        adapter = DailyListAdapter(list,
+            //Callback 1 renaming elements
+            {dailyDbEntity ->
                 if (isEdit){
                     val inflater = LayoutInflater.from(this)
 
@@ -90,8 +84,8 @@ class DailyActivity : AppCompatActivity() {
                                     val items = appRepository.getDailyTab()
                                     list.clear()
                                     list.addAll(items)
-                                    //edit adapter notify
-                                    adapter.notifyDataSetChanged()
+                                    //Adapter notify
+                                    adapter.notifyItemRangeInserted(0, items.size)
                                 }
                                 dialog.dismiss()
                             }
@@ -100,7 +94,7 @@ class DailyActivity : AppCompatActivity() {
                         .show()
                 }
             },
-            //Callback 3 deleting elements
+            //Callback 2 deleting elements
             {actualPosition ->
                     try {
                         lifecycleScope.launch {
@@ -114,8 +108,25 @@ class DailyActivity : AppCompatActivity() {
                         Toast.makeText(this, getString(R.string.Message_Deleted), Toast.LENGTH_SHORT).show()
                         isCompleted()
                     }catch (e: Exception){
+                        e.printStackTrace()
                         Toast.makeText(this, getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
                     }
+            },
+            //Callback 3 updating checkbox NEED UPDATE
+            {actualPosition ->
+                /*try {
+                    lifecycleScope.launch {
+                        val item = list[actualPosition]
+                        val updatedItem = item.copy(state = if (isChecked) 1L else 0L)
+                        list[actualPosition] = updatedItem
+                        appRepository.updateDailyData(updatedItem)
+                    }
+                    adapter.notifyItemChanged(actualPosition)
+                    isCompleted()
+                }catch (e: Exception){
+                    e.printStackTrace()
+                    Toast.makeText(this, getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
+                }*/
             }
         )
 
@@ -132,6 +143,7 @@ class DailyActivity : AppCompatActivity() {
                 streak.text = appRepository.getStreak().streak.toString()
             //If streak isn't existing
             } catch (e : NullPointerException){
+                e.printStackTrace()
                 appRepository.insertStreak(AdditionalDbEntity(1L, 0))
                 streak.text = appRepository.getStreak().streak.toString()
             }
@@ -143,7 +155,7 @@ class DailyActivity : AppCompatActivity() {
             //Adapter update
             adapter.notifyItemRangeInserted(0, items.size)
             //Completed tasks update
-            isCompleted
+            isCompleted()
         }
 
 
@@ -160,6 +172,7 @@ class DailyActivity : AppCompatActivity() {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition
                 (recyclerView.adapter as? DailyListAdapter)?.onItemMove(fromPosition, toPosition)
+                positionsUpdate()
                 return true
             }
 

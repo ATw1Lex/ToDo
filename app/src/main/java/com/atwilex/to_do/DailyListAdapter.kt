@@ -1,22 +1,19 @@
 package com.atwilex.to_do
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.*
 import java.util.Collections
 
-class DailyListAdapter(private val context: Context, private val list: MutableList<DailyDbEntity>, private val appRepository: AppRepository,
-                       private val callback1 : () -> Unit,
-                       private val callback2 : (DailyDbEntity) -> Unit,
-                       private val callback3 : (Int) -> Unit)
-    : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
+class DailyListAdapter(
+    private val list: MutableList<DailyDbEntity>,
+    private val callback1 : (DailyDbEntity) -> Unit,
+    private val callback2 : (Int) -> Unit,
+    private val callback3 : (Int) -> Unit) : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
     var isEdit = false
         set(value){
@@ -31,7 +28,7 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
         val trashBin: ImageButton = itemView.findViewById(R.id.trash_bin)
     }
 
-    //Something...
+    //Inflater
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val itemView = inflater.inflate(R.layout.list_black_text, parent, false)
@@ -41,9 +38,8 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
     //Set on click listeners
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         var item = list[position]
-
         holder.textView.text = item.name
-        holder.checkBox.isChecked = item.state != 0L
+        //holder.checkBox.isChecked = item.state != 0L
 
         if (isEdit){
             holder.trashBin.visibility = View.VISIBLE
@@ -54,37 +50,24 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
 
         //Edit textView's title
         holder.textView.setOnClickListener {
-            callback2(list[holder.adapterPosition])
+            callback1(list[holder.bindingAdapterPosition])
         }
 
         //Deleting elements
         holder.trashBin.setOnClickListener {
-            callback3(holder.adapterPosition)
+            callback2(holder.bindingAdapterPosition)
         }
 
         //Checkbox updating NEED UPDATE
-        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
-            CoroutineScope(Dispatchers.Main).launch {
-                //Update checkbox, but with anti-bag defense
-                try {
-                    val actualPosition = holder.adapterPosition
-                    item = list[actualPosition]
-                    val updatedItem = item.copy(state = if (isChecked) 1L else 0L)
-                    list[actualPosition] = updatedItem
-                    appRepository.updateDailyData(updatedItem)
-                    notifyItemChanged(actualPosition)
-                    callback1()
-                }catch (e: Exception){
-                    Toast.makeText(context, context.getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
-                }
-            }
+        holder.checkBox.setOnClickListener {
+            callback3(holder.bindingAdapterPosition)
         }
     }
 
     //Return list size
     override fun getItemCount() = list.size
 
-    //Class for transfer the list's item between other items NEED UPDATE
+    //Fun to transfer the list's item between other items
     fun onItemMove(fromPosition : Int, toPosition : Int){
 
         //Swapping
@@ -95,21 +78,5 @@ class DailyListAdapter(private val context: Context, private val list: MutableLi
             Collections.swap(list, toPosition, fromPosition)
         }
         notifyItemMoved(fromPosition, toPosition)
-
-        //Update database
-        positionChecking()
-    }
-
-    //NEED UPDATE
-    fun positionChecking(){
-        for(item in list){
-            if(item.position == list.indexOf(item)) continue
-            val newItem = item.copy(position = list.indexOf(item))
-            list[list.indexOf(item)] = newItem
-            CoroutineScope(Dispatchers.Main).launch {
-                appRepository.updateDailyData(newItem)
-            }
-            notifyItemChanged(list.indexOf(item))
-        }
     }
 }
