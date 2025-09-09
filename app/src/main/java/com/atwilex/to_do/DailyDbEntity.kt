@@ -5,9 +5,9 @@ import androidx.room.*
 //Entity for daily tab
 @Entity(tableName = "daily")
 data class DailyDbEntity(
-    @PrimaryKey(autoGenerate = true) val id : Long,
+    @PrimaryKey(autoGenerate = true) var id : Long,
     var name: String,
-    val state: Long,
+    var state: Long,
 
     @ColumnInfo(defaultValue = "0")
     val position: Int

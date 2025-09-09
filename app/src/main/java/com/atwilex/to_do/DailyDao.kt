@@ -10,8 +10,8 @@ import androidx.room.Update
 //Dao for daily tab
 @Dao
 interface DailyDao {
-    @Insert(entity = DailyDbEntity::class)
-    fun insertNewData(data: DailyDbEntity)
+    @Insert()
+    fun insertNewData(dailyDbEntity: DailyDbEntity) : Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllTasks(tasks : List<DailyDbEntity>)

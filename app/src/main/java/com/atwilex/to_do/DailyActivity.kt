@@ -85,6 +85,7 @@ class DailyActivity : AppCompatActivity() {
                                     list.clear()
                                     list.addAll(items)
                                     //Adapter notify
+                                    adapter.notifyItemRangeRemoved(0, items.size)
                                     adapter.notifyItemRangeInserted(0, items.size)
                                 }
                                 dialog.dismiss()
@@ -112,21 +113,19 @@ class DailyActivity : AppCompatActivity() {
                         Toast.makeText(this, getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
                     }
             },
-            //Callback 3 updating checkbox NEED UPDATE
-            {actualPosition ->
-                /*try {
-                    lifecycleScope.launch {
-                        val item = list[actualPosition]
-                        val updatedItem = item.copy(state = if (isChecked) 1L else 0L)
-                        list[actualPosition] = updatedItem
-                        appRepository.updateDailyData(updatedItem)
-                    }
-                    adapter.notifyItemChanged(actualPosition)
+            //Callback 3 updating checkbox
+            {actualPosition, isChecked ->
+                if (isChecked){
+                    Toast.makeText(this, "True", Toast.LENGTH_SHORT).show()
+                    list[actualPosition].state = 1L
+                    lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
                     isCompleted()
-                }catch (e: Exception){
-                    e.printStackTrace()
-                    Toast.makeText(this, getString(R.string.Message_Slow_Down), Toast.LENGTH_SHORT).show()
-                }*/
+                } else {
+                    Toast.makeText(this, "False", Toast.LENGTH_SHORT).show()
+                    list[actualPosition].state = 0L
+                    lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
+                    isCompleted()
+                }
             }
         )
 
@@ -215,17 +214,16 @@ class DailyActivity : AppCompatActivity() {
         //Create a new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
+                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, list.size)
+                list.add(newItem)
                 lifecycleScope.launch {
-                    val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, list.size)
-                    val id = appRepository.insertNewDailyData(newItem)
-                    val newItemForList = newItem.copy(id = id)
-                    list.add(newItemForList)
-                    newTask.text.clear()
-                    //Adapter update
-                    adapter.notifyItemInserted(list.indexOf(newItemForList))
-                    //Completed update
-                    isCompleted()
+                    list[list.size-1].id = appRepository.insertNewDailyData(newItem)
                 }
+                newTask.text.clear()
+                //Adapter update
+                adapter.notifyItemInserted(list.size-1)
+                //Completed update
+                isCompleted()
                 Toast.makeText(this, getString(R.string.Message_Created), Toast.LENGTH_SHORT).show()
             }
         }
@@ -257,10 +255,10 @@ class DailyActivity : AppCompatActivity() {
 
     //function for checking completed tasks
     fun isCompletedTasks(list : List<DailyDbEntity>): String{
-        var isComplete = 0
+        var isCompleted = 0
         for (items in list){
-            if(items.state == 1L) isComplete++
+            if(items.state == 1L) isCompleted++
         }
-        return "$isComplete/${list.size}"
+        return "$isCompleted/${list.size}"
     }
 }

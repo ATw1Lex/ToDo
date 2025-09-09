@@ -8,8 +8,7 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
 
     //Daily Tab's functions
     suspend fun insertNewDailyData(dailyDbEntity : DailyDbEntity) : Long{
-        withContext(Dispatchers.IO) { dailyDao.insertNewData(dailyDbEntity) }
-        return dailyDbEntity.id
+        return withContext(Dispatchers.IO) { dailyDao.insertNewData(dailyDbEntity) }
     }
 
     suspend fun removeDailyDataById(id : Long){

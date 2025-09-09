@@ -13,7 +13,7 @@ class DailyListAdapter(
     private val list: MutableList<DailyDbEntity>,
     private val callback1 : (DailyDbEntity) -> Unit,
     private val callback2 : (Int) -> Unit,
-    private val callback3 : (Int) -> Unit) : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
+    private val callback3 : (Int, Boolean) -> Unit) : RecyclerView.Adapter<DailyListAdapter.TaskViewHolder>() {
 
     var isEdit = false
         set(value){
@@ -39,7 +39,7 @@ class DailyListAdapter(
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         var item = list[position]
         holder.textView.text = item.name
-        //holder.checkBox.isChecked = item.state != 0L
+        holder.checkBox.isChecked = item.state != 0L
 
         if (isEdit){
             holder.trashBin.visibility = View.VISIBLE
@@ -58,10 +58,11 @@ class DailyListAdapter(
             callback2(holder.bindingAdapterPosition)
         }
 
-        //Checkbox updating NEED UPDATE
-        holder.checkBox.setOnClickListener {
-            callback3(holder.bindingAdapterPosition)
+        //Checkbox updating
+        holder.checkBox.setOnCheckedChangeListener { _, _ ->
+            callback3(holder.bindingAdapterPosition, holder.checkBox.isChecked)
         }
+
     }
 
     //Return list size
@@ -79,4 +80,6 @@ class DailyListAdapter(
         }
         notifyItemMoved(fromPosition, toPosition)
     }
+
+
 }
