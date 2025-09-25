@@ -64,35 +64,40 @@ class DailyActivity : AppCompatActivity() {
             //Callback 1 renaming elements
             {dailyDbEntity ->
                 if (isEdit){
-                    val inflater = LayoutInflater.from(this)
+                    try {
+                        val inflater = LayoutInflater.from(this)
 
-                    val dialogView = inflater.inflate(R.layout.dialog_edit_task, null)
+                        val dialogView = inflater.inflate(R.layout.dialog_edit_task, null)
 
-                    val editText = dialogView.findViewById<EditText>(R.id.renameTaskEditText)
+                        val editText = dialogView.findViewById<EditText>(R.id.renameTaskEditText)
 
-                    editText.setText(dailyDbEntity.name)
+                        editText.setText(dailyDbEntity.name)
 
-                    MaterialAlertDialogBuilder(this)
-                        .setTitle(getString(R.string.Dialog_title))
-                        .setView(dialogView)
-                        .setPositiveButton(getString(R.string.Rename_Edit_Button))
-                        { dialog, _ ->
-                            val newTaskName = editText.text.toString()
-                            if(newTaskName.isNotEmpty()){
-                                lifecycleScope.launch {
-                                    appRepository.updateDailyData(dailyDbEntity.copy(name = newTaskName))
-                                    val items = appRepository.getDailyTab()
-                                    list.clear()
-                                    list.addAll(items)
-                                    //Adapter notify
-                                    adapter.notifyItemRangeRemoved(0, items.size)
-                                    adapter.notifyItemRangeInserted(0, items.size)
+                        MaterialAlertDialogBuilder(this)
+                            .setTitle(getString(R.string.Dialog_title))
+                            .setView(dialogView)
+                            .setPositiveButton(getString(R.string.Rename_Edit_Button))
+                            { dialog, _ ->
+                                val newTaskName = editText.text.toString()
+                                if(newTaskName.isNotEmpty()){
+                                    lifecycleScope.launch {
+                                        appRepository.updateDailyData(dailyDbEntity.copy(name = newTaskName))
+                                        val items = appRepository.getDailyTab()
+                                        list.clear()
+                                        list.addAll(items)
+                                        //Adapter notify
+                                        adapter.notifyItemRangeRemoved(0, items.size)
+                                        adapter.notifyItemRangeInserted(0, items.size)
+                                    }
+                                    dialog.dismiss()
                                 }
-                                dialog.dismiss()
+
                             }
-                        }
-                        .setNegativeButton(getString(R.string.Rename_Cancel_Button)) { dialog, _ -> dialog.dismiss() }
-                        .show()
+                            .setNegativeButton(getString(R.string.Rename_Cancel_Button)) { dialog, _ -> dialog.dismiss() }
+                            .show()
+                    } catch (e : Exception){
+                        e.printStackTrace()
+                    }
                 }
             },
             //Callback 2 deleting elements
@@ -115,16 +120,18 @@ class DailyActivity : AppCompatActivity() {
             },
             //Callback 3 updating checkbox
             {actualPosition, isChecked ->
-                if (isChecked){
-                    Toast.makeText(this, "True", Toast.LENGTH_SHORT).show()
-                    list[actualPosition].state = 1L
-                    lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
-                    isCompleted()
-                } else {
-                    Toast.makeText(this, "False", Toast.LENGTH_SHORT).show()
-                    list[actualPosition].state = 0L
-                    lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
-                    isCompleted()
+                try {
+                    if (isChecked){
+                        list[actualPosition].state = 1L
+                        lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
+                        isCompleted()
+                    } else {
+                        list[actualPosition].state = 0L
+                        lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
+                        isCompleted()
+                    }
+                }catch (e : Exception){
+                    e.printStackTrace()
                 }
             }
         )

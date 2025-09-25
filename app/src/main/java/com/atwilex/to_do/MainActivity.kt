@@ -8,11 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.atwilex.to_do.AppDependencies.appRepository
-import kotlinx.coroutines.launch
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +21,8 @@ class MainActivity : AppCompatActivity() {
             AppDependencies.init(applicationContext)
         }
 
+        resetSchedule(this)
+
         //Initialization
         val buttonDaily : Button = findViewById(R.id.daily)
         val buttonDisposable : Button = findViewById(R.id.disposable)
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         //Function for test Worker
         fun runResetWorker() {
-            val resetWorker= OneTimeWorkRequestBuilder<ResetWorker>().build()
+            val resetWorker = OneTimeWorkRequestBuilder<ResetWorker>().build()
 
             WorkManager.getInstance(applicationContext).enqueue(resetWorker)
 
