@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
             AppDependencies.init(applicationContext)
         }
 
-        resetSchedule(this)
+        //resetSchedule(this)
 
         //Initialization
         val buttonDaily : Button = findViewById(R.id.daily)
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
             WorkManager.getInstance(applicationContext).enqueue(resetWorker)
 
-            Log.d("TestButton", "Запущен Worker для сброса задач.")
+            Log.d("TestWorker", "Запущен Worker для сброса задач.")
         }
 
         //Button for test Worker

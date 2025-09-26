@@ -31,7 +31,7 @@ class DailyActivity : AppCompatActivity() {
 
         //Initialization activity's elements
         val buttonComeBack : ImageButton = findViewById(R.id.comeBack)
-        val buttonEdit : Button = findViewById(R.id.edit_button)
+        val buttonEdit : ImageButton = findViewById(R.id.edit_button)
         val buttonAdd : Button = findViewById(R.id.add)
         val newTask : EditText = findViewById(R.id.NewTask)
 
@@ -141,12 +141,13 @@ class DailyActivity : AppCompatActivity() {
 
         //Streak
         val streak : TextView = findViewById(R.id.streak)
+        val streakButton : ImageButton = findViewById(R.id.streakButton)
 
         //Update list, streak with values from database
         lifecycleScope.launch {
             //If streak is existing
             try {
-                streak.text = appRepository.getStreak().streak.toString()
+                streak.text = "  " + appRepository.getStreak().streak.toString()
             //If streak isn't existing
             } catch (e : NullPointerException){
                 e.printStackTrace()
@@ -210,6 +211,8 @@ class DailyActivity : AppCompatActivity() {
         buttonAdd.visibility = View.GONE
         newTask.visibility = View.GONE
 
+        //Go to streak activity
+        streakButton.setOnClickListener { Toast.makeText(this, "Functionality is expected..", Toast.LENGTH_SHORT).show() }
 
         //Return on the main activity
         buttonComeBack.setOnClickListener {

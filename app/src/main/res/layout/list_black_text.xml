@@ -21,6 +21,7 @@
 
     <ImageButton
         android:id="@+id/trash_bin"
+        android:backgroundTint="#00FFFFFF"
         android:src="@drawable/trash_bin"
         android:layout_width="64dp"
         android:layout_height="64dp" />

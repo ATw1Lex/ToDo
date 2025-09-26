@@ -23,7 +23,7 @@
         android:id="@+id/ListDailyTasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:scrollbarSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,27 +33,28 @@
         android:id="@+id/NewTask"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         android:ems="8"
         android:hint="@string/Enter_Hint"
         android:inputType="text"
         android:textColor="#8177e4"
         android:textColorHint="#8177e4"
+        app:layout_constraintBottom_toTopOf="@+id/add"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ListDailyTasks" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/add"
         style="@style/ButtonStyle"
         android:layout_width="200dp"
         android:layout_height="70dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/Add_Button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NewTask" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/title"
@@ -61,16 +62,13 @@
         android:layout_height="40dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="24dp"
         android:text="@string/Daily_Title"
         android:textColor="#8177e4"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/ListDailyTasks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.728"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/complete"
@@ -88,31 +86,43 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
+    <ImageButton
         android:id="@+id/edit_button"
-        android:layout_width="270dp"
-        android:layout_height="75dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/rounded_button"
         android:backgroundTint="#8177e4"
-        android:fontFamily=">@font/ubuntu_medium"
-        android:text="@string/Edit_Button"
-        android:textSize="30sp"
+        android:src="@drawable/edit2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add"
-        app:layout_constraintVertical_bias="0.048" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/streak"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="12dp"
+    <ImageButton
+        android:id="@+id/streakButton"
+        android:layout_width="64dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="6dp"
+        android:backgroundTint="#00FFFFFF"
         android:text=""
-        android:textSize="35sp"
+        android:src="@drawable/streak"
         app:layout_constraintEnd_toStartOf="@+id/title"
         app:layout_constraintStart_toEndOf="@+id/comeBack"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/streak"
+        android:layout_width="64dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="40dp"
+        android:text=""
+        android:textColor="#8177e4"
+        android:textSize="35sp"
+        app:layout_constraintBottom_toBottomOf="@+id/streakButton"
+        app:layout_constraintEnd_toEndOf="@+id/streakButton"
+        app:layout_constraintStart_toStartOf="@+id/streakButton"
+        app:layout_constraintTop_toTopOf="@+id/streakButton"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
