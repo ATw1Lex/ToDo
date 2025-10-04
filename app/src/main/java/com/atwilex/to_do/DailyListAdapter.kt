@@ -31,7 +31,7 @@ class DailyListAdapter(
     //Inflater
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.list_black_text, parent, false)
+        val itemView = inflater.inflate(R.layout.daily_list_item, parent, false)
         return TaskViewHolder(itemView)
     }
 

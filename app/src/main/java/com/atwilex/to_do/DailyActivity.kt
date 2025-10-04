@@ -212,7 +212,10 @@ class DailyActivity : AppCompatActivity() {
         newTask.visibility = View.GONE
 
         //Go to streak activity
-        streakButton.setOnClickListener { Toast.makeText(this, "Functionality is expected..", Toast.LENGTH_SHORT).show() }
+        streakButton.setOnClickListener {
+            val intent = Intent(this, StreakActivity::class.java)
+            startActivity(intent)
+        }
 
         //Return on the main activity
         buttonComeBack.setOnClickListener {
@@ -224,7 +227,7 @@ class DailyActivity : AppCompatActivity() {
         //Create a new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
-                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, list.size)
+                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, "04-10-2025" ,list.size)
                 list.add(newItem)
                 lifecycleScope.launch {
                     list[list.size-1].id = appRepository.insertNewDailyData(newItem)

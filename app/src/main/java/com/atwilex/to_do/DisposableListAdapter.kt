@@ -14,10 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DisposableListAdapter(context: Context, private val list: MutableList<DisposableDbEntity>, private val tabRepository: AppRepository) : ArrayAdapter<DisposableDbEntity>(context,
-    R.layout.list_white_text, R.id.list_content, list){
+    R.layout.disposable_list_item, R.id.list_content, list){
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val convertViewReturn : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_white_text, parent, false)
+        val convertViewReturn : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.disposable_list_item, parent, false)
 
         //Initialization
         val textView: TextView = convertViewReturn.findViewById(R.id.list_content)

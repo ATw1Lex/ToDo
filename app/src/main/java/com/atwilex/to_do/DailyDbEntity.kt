@@ -9,6 +9,9 @@ data class DailyDbEntity(
     var name: String,
     var state: Long,
 
+    @ColumnInfo(defaultValue = "04-10-2025")
+    val day : String,
+
     @ColumnInfo(defaultValue = "0")
     val position: Int
 )
