@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/list_content"
-        android:layout_width="344dp"
+        android:layout_width="286dp"
         android:layout_height="64dp"
         android:background="#8177e4"
         android:textColor="#00001B"
@@ -15,6 +15,7 @@
 
     <CheckBox
         android:id="@+id/checkbox"
+        android:clickable="false"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:background="#8177e4" />

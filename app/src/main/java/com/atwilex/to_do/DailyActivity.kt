@@ -36,10 +36,10 @@ class DailyActivity : AppCompatActivity() {
         val newTask : EditText = findViewById(R.id.NewTask)
 
         //Initialization List with adapter
-        val taskList : RecyclerView = findViewById(R.id.ListDailyTasks)
-        val list = mutableListOf<DailyDbEntity>()
-        val complete : TextView = findViewById(R.id.complete)
-        taskList.layoutManager = LinearLayoutManager(this)
+        val listView : RecyclerView = findViewById(R.id.ListDailyTasks)
+        val taskList = mutableListOf<DailyDbEntity>()
+        val complete: TextView = findViewById(R.id.complete)
+        listView.layoutManager = LinearLayoutManager(this)
 
         //Initialization isEdit for modes
         var isEdit = false
@@ -48,19 +48,19 @@ class DailyActivity : AppCompatActivity() {
         lateinit var adapter : DailyListAdapter
 
         //Lambda for update completed tasks
-        val isCompleted = {complete.text = isCompletedTasks(list)}
+        val isCompleted = {complete.text = isCompletedTasks(taskList)}
         //Lambda for update positions in list
         val positionsUpdate = {
-            for(item in list){
-                if(item.position == list.indexOf(item)) continue
-                val newItem = item.copy(position = list.indexOf(item))
-                list[list.indexOf(item)] = newItem
+            for(item in taskList){
+                if(item.position == taskList.indexOf(item)) continue
+                val newItem = item.copy(position = taskList.indexOf(item))
+                taskList[taskList.indexOf(item)] = newItem
                 lifecycleScope.launch { appRepository.updateDailyData(newItem) }
-                adapter.notifyItemChanged(list.indexOf(item))
+                adapter.notifyItemChanged(taskList.indexOf(item))
             }}
 
         //Adapter initialization
-        adapter = DailyListAdapter(list,
+        adapter = DailyListAdapter(taskList,
             //Callback 1 renaming elements
             {dailyDbEntity ->
                 if (isEdit){
@@ -83,8 +83,8 @@ class DailyActivity : AppCompatActivity() {
                                     lifecycleScope.launch {
                                         appRepository.updateDailyData(dailyDbEntity.copy(name = newTaskName))
                                         val items = appRepository.getDailyTab()
-                                        list.clear()
-                                        list.addAll(items)
+                                        taskList.clear()
+                                        taskList.addAll(items)
                                         //Adapter notify
                                         adapter.notifyItemRangeRemoved(0, items.size)
                                         adapter.notifyItemRangeInserted(0, items.size)
@@ -104,8 +104,8 @@ class DailyActivity : AppCompatActivity() {
             {actualPosition ->
                     try {
                         lifecycleScope.launch {
-                            val item = list[actualPosition]
-                            list.removeAt(actualPosition)
+                            val item = taskList[actualPosition]
+                            taskList.removeAt(actualPosition)
                             appRepository.removeDailyDataById(item.id)
                             adapter.notifyItemRemoved(actualPosition)
                         }
@@ -122,12 +122,12 @@ class DailyActivity : AppCompatActivity() {
             {actualPosition, isChecked ->
                 try {
                     if (isChecked){
-                        list[actualPosition].state = 1L
-                        lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
+                        taskList[actualPosition].state = 1L
+                        lifecycleScope.launch { appRepository.updateDailyData(taskList[actualPosition]) }
                         isCompleted()
                     } else {
-                        list[actualPosition].state = 0L
-                        lifecycleScope.launch { appRepository.updateDailyData(list[actualPosition]) }
+                        taskList[actualPosition].state = 0L
+                        lifecycleScope.launch { appRepository.updateDailyData(taskList[actualPosition]) }
                         isCompleted()
                     }
                 }catch (e : Exception){
@@ -137,7 +137,7 @@ class DailyActivity : AppCompatActivity() {
         )
 
         //Set up adapter
-        taskList.adapter = adapter
+        listView.adapter = adapter
 
         //Streak
         val streak : TextView = findViewById(R.id.streak)
@@ -157,8 +157,8 @@ class DailyActivity : AppCompatActivity() {
             //Get Items
             val items = appRepository.getDailyTab()
             //Clear + Add new items
-            list.clear()
-            list.addAll(items)
+            taskList.clear()
+            taskList.addAll(items)
             //Adapter update
             adapter.notifyItemRangeInserted(0, items.size)
             //Completed tasks update
@@ -202,7 +202,7 @@ class DailyActivity : AppCompatActivity() {
         }
         //Swapping logic set up
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(taskList)
+        itemTouchHelper.attachToRecyclerView(listView)
 
 
         //Initialization edit's mode elements
@@ -227,14 +227,14 @@ class DailyActivity : AppCompatActivity() {
         //Create a new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
-                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, "04-10-2025" ,list.size)
-                list.add(newItem)
+                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, "04-10-2025" ,taskList.size)
+                taskList.add(newItem)
                 lifecycleScope.launch {
-                    list[list.size-1].id = appRepository.insertNewDailyData(newItem)
+                    taskList[taskList.size-1].id = appRepository.insertNewDailyData(newItem)
                 }
                 newTask.text.clear()
                 //Adapter update
-                adapter.notifyItemInserted(list.size-1)
+                adapter.notifyItemInserted(taskList.size-1)
                 //Completed update
                 isCompleted()
                 Toast.makeText(this, getString(R.string.Message_Created), Toast.LENGTH_SHORT).show()
