@@ -27,6 +27,10 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
         return withContext(Dispatchers.IO) { dailyDao.getTab() }
     }
 
+    suspend fun getToday(day : String) : List<DailyDbEntity>{
+        return withContext(Dispatchers.IO) { dailyDao.getToday(day) }
+    }
+
     //Fun for streak system
     suspend fun getState() : List<Boolean> {
         return withContext(Dispatchers.IO) { dailyDao.getState() }

@@ -7,7 +7,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class StreakListAdapter(private val list: MutableList<DailyDbEntity>, ) : RecyclerView.Adapter<StreakListAdapter.TaskViewHolder>() {
+class StreakListAdapter(private val list: MutableList<DailyDbEntity>) : RecyclerView.Adapter<StreakListAdapter.TaskViewHolder>() {
 
     //Initialization
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

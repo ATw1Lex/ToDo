@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.atwilex.to_do.AppDependencies.appRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 
 @Suppress("DEPRECATION")
@@ -82,7 +83,7 @@ class DailyActivity : AppCompatActivity() {
                                 if(newTaskName.isNotEmpty()){
                                     lifecycleScope.launch {
                                         appRepository.updateDailyData(dailyDbEntity.copy(name = newTaskName))
-                                        val items = appRepository.getDailyTab()
+                                        val items = appRepository.getToday(LocalDate.now().toString())
                                         taskList.clear()
                                         taskList.addAll(items)
                                         //Adapter notify
@@ -155,7 +156,7 @@ class DailyActivity : AppCompatActivity() {
                 streak.text = appRepository.getStreak().streak.toString()
             }
             //Get Items
-            val items = appRepository.getDailyTab()
+            val items = appRepository.getToday(LocalDate.now().toString())
             //Clear + Add new items
             taskList.clear()
             taskList.addAll(items)
@@ -227,7 +228,7 @@ class DailyActivity : AppCompatActivity() {
         //Create a new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
-                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, "04-10-2025" ,taskList.size)
+                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, LocalDate.now().minusDays(0).toString() ,taskList.size)
                 taskList.add(newItem)
                 lifecycleScope.launch {
                     taskList[taskList.size-1].id = appRepository.insertNewDailyData(newItem)
