@@ -83,7 +83,7 @@ class DailyActivity : AppCompatActivity() {
                                 if(newTaskName.isNotEmpty()){
                                     lifecycleScope.launch {
                                         appRepository.updateDailyData(dailyDbEntity.copy(name = newTaskName))
-                                        val items = appRepository.getToday(LocalDate.now().toString())
+                                        val items = appRepository.getOldTasks(LocalDate.now().toString())
                                         taskList.clear()
                                         taskList.addAll(items)
                                         //Adapter notify
@@ -140,30 +140,49 @@ class DailyActivity : AppCompatActivity() {
         //Set up adapter
         listView.adapter = adapter
 
-        //Streak
+        //Streak initialization
         val streak : TextView = findViewById(R.id.streak)
         val streakButton : ImageButton = findViewById(R.id.streakButton)
 
-        //Update list, streak with values from database
+        //Var that contain today
+        var today : String?
+
+        //List and streak updating
         lifecycleScope.launch {
-            //If streak is existing
-            try {
-                streak.text = "  " + appRepository.getStreak().streak.toString()
-            //If streak isn't existing
-            } catch (e : NullPointerException){
-                e.printStackTrace()
-                appRepository.insertStreak(AdditionalDbEntity(1L, 0))
-                streak.text = appRepository.getStreak().streak.toString()
+            //Does the today (streak) exist in the database?
+            if(appRepository.getToday() == null){
+                //Create streak and today
+                appRepository.insertStreak(AdditionalDbEntity(0L,0, LocalDate.now().toString()))
+                today = appRepository.getToday()
+                streak.text = appRepository.getStreak().toString()
+            }else {
+                //just get today
+                today = appRepository.getToday()
+                streak.text = appRepository.getStreak().toString()
             }
-            //Get Items
-            val items = appRepository.getToday(LocalDate.now().toString())
-            //Clear + Add new items
-            taskList.clear()
-            taskList.addAll(items)
-            //Adapter update
-            adapter.notifyItemRangeInserted(0, items.size)
-            //Completed tasks update
-            isCompleted()
+            //Does today == now?
+            if(today == LocalDate.now().toString()){
+                //Yes -> get values from database
+
+                //Get items
+                val items = appRepository.getOldTasks(today as String)
+                //Clear + Add new items
+                taskList.addAll(items)
+                //Adapter update
+                adapter.notifyItemRangeInserted(0, items.size)
+                //Completed tasks update
+                isCompleted()
+            } else {
+                TODO()
+                /*
+                //Get yesterday tasks
+                val items = appRepository.getOldTasks(today as String)
+                for (item in items){
+                    if(item.state == 0L){
+
+                    }
+                }*/
+            }
         }
 
 

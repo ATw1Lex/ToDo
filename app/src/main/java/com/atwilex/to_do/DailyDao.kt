@@ -28,11 +28,10 @@ interface DailyDao {
     @Query("UPDATE daily SET state = 0")
     fun checkboxReset()
 
-    //Query for streak Activity
-    @Query("SELECT * FROM daily WHERE day = :day ORDER BY position ASC")
-    fun getToday(day : String) : List<DailyDbEntity>
-
     //Query for streak system
-    @Query("SELECT state FROM daily WHERE state = 0")
-    fun getState(): List<Boolean>
+    @Query("SELECT * FROM daily WHERE day = :day ORDER BY position ASC")
+    fun getOldTasks(day : String) : List<DailyDbEntity>
+
+    @Query("SELECT state FROM daily WHERE state = 0 AND day = :day")
+    fun getState(day : String): List<Boolean>
 }

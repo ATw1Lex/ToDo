@@ -2,14 +2,11 @@ package com.atwilex.to_do
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,19 +24,6 @@ class MainActivity : AppCompatActivity() {
         val buttonDaily : Button = findViewById(R.id.daily)
         val buttonDisposable : Button = findViewById(R.id.disposable)
         val buttonGlobal : Button = findViewById(R.id.global)
-        val buttonReset : Button = findViewById(R.id.button_reset)
-
-        //Function for test Worker
-        fun runResetWorker() {
-            val resetWorker = OneTimeWorkRequestBuilder<ResetWorker>().build()
-
-            WorkManager.getInstance(applicationContext).enqueue(resetWorker)
-
-            Log.d("TestWorker", "Запущен Worker для сброса задач.")
-        }
-
-        //Button for test Worker
-        buttonReset.setOnClickListener { runResetWorker() }
 
         //Button to Daily Activity
         buttonDaily.setOnClickListener {

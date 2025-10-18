@@ -4,18 +4,15 @@ import androidx.room.*
 
 @Dao
 interface AdditionalDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    //Insert new day
+    @Insert
     fun insertStreak(additionalDbEntity: AdditionalDbEntity)
 
-    //Get streak
-    @Query("SELECT * FROM additional WHERE id = 1")
-    fun getStreak() : AdditionalDbEntity
+    //Require today
+    @Query("SELECT day FROM additional ORDER BY day DESC LIMIT 1")
+    fun getToday() : String?
 
-    //Update streak when you need set 0 to streak
-    @Query("UPDATE additional SET streak = 0")
-    fun zeroingStreak()
-
-    //Update streak when you need set 0 to streak
-    @Query("UPDATE additional SET streak = streak + 1 WHERE id = 1")
-    fun incrementStreak()
+    //Require streak
+    @Query("SELECT streak FROM additional ORDER BY day DESC LIMIT 1")
+    fun getStreak() : Int
 }

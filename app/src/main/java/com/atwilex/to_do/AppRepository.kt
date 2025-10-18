@@ -27,34 +27,29 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
         return withContext(Dispatchers.IO) { dailyDao.getTab() }
     }
 
-    suspend fun getToday(day : String) : List<DailyDbEntity>{
-        return withContext(Dispatchers.IO) { dailyDao.getToday(day) }
+    suspend fun getOldTasks(day : String) : List<DailyDbEntity>{
+        return withContext(Dispatchers.IO) { dailyDao.getOldTasks(day) }
     }
 
     //Fun for streak system
-    suspend fun getState() : List<Boolean> {
-        return withContext(Dispatchers.IO) { dailyDao.getState() }
+    suspend fun getState(day : String) : List<Boolean> {
+        return withContext(Dispatchers.IO) { dailyDao.getState(day) }
     }
 
 
     //Additional functions
 
+    suspend fun getToday() : String? {
+        return withContext(Dispatchers.IO) { additionalDao.getToday() }
+    }
+
     suspend fun insertStreak(additionalDbEntity: AdditionalDbEntity){
         withContext(Dispatchers.IO) { additionalDao.insertStreak(additionalDbEntity) }
     }
 
-    suspend fun getStreak() : AdditionalDbEntity{
+    suspend fun getStreak() : Int {
         return withContext(Dispatchers.IO) { additionalDao.getStreak() }
     }
-
-    suspend fun zeroingStreak(){
-        withContext(Dispatchers.IO) { additionalDao.zeroingStreak() }
-    }
-
-    suspend fun incrementStreak(){
-        withContext(Dispatchers.IO) { additionalDao.incrementStreak() }
-    }
-
 
     //Disposable Tab's functions
     suspend fun insertNewDisposableData(disposableDbEntity: DisposableDbEntity) : Long{

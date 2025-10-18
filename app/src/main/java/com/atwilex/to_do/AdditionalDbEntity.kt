@@ -8,5 +8,6 @@ import androidx.room.*
 data class AdditionalDbEntity(
     @PrimaryKey(autoGenerate = true) val id : Long,
     @ColumnInfo(defaultValue = "0")
-    val streak: Int
+    val streak: Int,
+    val day : String
 )

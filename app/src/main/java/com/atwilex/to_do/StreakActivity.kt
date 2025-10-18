@@ -2,7 +2,6 @@ package com.atwilex.to_do
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -42,7 +41,7 @@ class StreakActivity : AppCompatActivity() {
 
         //Loading data from database
         lifecycleScope.launch {
-            val items = appRepository.getToday(LocalDate.now().toString())
+            val items = appRepository.getOldTasks(LocalDate.now().toString())
             streakList.clear()
             streakList.addAll(items)
             listAdapter.notifyItemRangeInserted(0, items.size)
@@ -53,7 +52,7 @@ class StreakActivity : AppCompatActivity() {
         left.setOnClickListener {
             today = today.minusDays(1)
             lifecycleScope.launch {
-                val items = appRepository.getToday(today.toString())
+                val items = appRepository.getOldTasks(today.toString())
                 val removed = streakList.size
                 streakList.clear()
                 listAdapter.notifyItemRangeRemoved(0, removed)
@@ -67,7 +66,7 @@ class StreakActivity : AppCompatActivity() {
         right.setOnClickListener {
             today = today.plusDays(1)
             lifecycleScope.launch {
-                val items = appRepository.getToday(today.toString())
+                val items = appRepository.getOldTasks(today.toString())
                 val removed = streakList.size
                 streakList.clear()
                 listAdapter.notifyItemRangeRemoved(0, removed)

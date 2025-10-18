@@ -33,14 +33,4 @@
         app:layout_constraintTop_toBottomOf="@+id/disposable"
         />
 
-    <Button
-        android:id="@+id/button_reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Worker_Test_Button"
-        app:layout_constraintBottom_toTopOf="@+id/daily"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
