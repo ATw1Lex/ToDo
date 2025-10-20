@@ -41,7 +41,7 @@ class StreakActivity : AppCompatActivity() {
 
         //Loading data from database
         lifecycleScope.launch {
-            val items = appRepository.getOldTasks(LocalDate.now().toString())
+            val items = appRepository.getAnyDailyTasks(LocalDate.now().toString())
             streakList.clear()
             streakList.addAll(items)
             listAdapter.notifyItemRangeInserted(0, items.size)
@@ -52,7 +52,7 @@ class StreakActivity : AppCompatActivity() {
         left.setOnClickListener {
             today = today.minusDays(1)
             lifecycleScope.launch {
-                val items = appRepository.getOldTasks(today.toString())
+                val items = appRepository.getAnyDailyTasks(today.toString())
                 val removed = streakList.size
                 streakList.clear()
                 listAdapter.notifyItemRangeRemoved(0, removed)
@@ -66,7 +66,7 @@ class StreakActivity : AppCompatActivity() {
         right.setOnClickListener {
             today = today.plusDays(1)
             lifecycleScope.launch {
-                val items = appRepository.getOldTasks(today.toString())
+                val items = appRepository.getAnyDailyTasks(today.toString())
                 val removed = streakList.size
                 streakList.clear()
                 listAdapter.notifyItemRangeRemoved(0, removed)

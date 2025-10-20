@@ -11,6 +11,10 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
         return withContext(Dispatchers.IO) { dailyDao.insertNewData(dailyDbEntity) }
     }
 
+    suspend fun insertListOfTasks (taskList : List<DailyDbEntity>) {
+        withContext(Dispatchers.IO) { dailyDao.insertListOfTasks(taskList) }
+    }
+
     suspend fun removeDailyDataById(id : Long){
         withContext(Dispatchers.IO) { dailyDao.removeData(id) }
     }
@@ -19,16 +23,12 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
         withContext(Dispatchers.IO) { dailyDao.updateTab(dailyDbEntity) }
     }
 
-    suspend fun checkboxReset(){
-        withContext(Dispatchers.IO) { dailyDao.checkboxReset() }
-    }
-
     suspend fun getDailyTab() : List<DailyDbEntity>{
         return withContext(Dispatchers.IO) { dailyDao.getTab() }
     }
 
-    suspend fun getOldTasks(day : String) : List<DailyDbEntity>{
-        return withContext(Dispatchers.IO) { dailyDao.getOldTasks(day) }
+    suspend fun getAnyDailyTasks(day : String) : List<DailyDbEntity>{
+        return withContext(Dispatchers.IO) { dailyDao.getAnyDailyTasks(day) }
     }
 
     //Fun for streak system

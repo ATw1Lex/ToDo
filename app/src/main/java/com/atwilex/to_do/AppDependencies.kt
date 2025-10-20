@@ -24,7 +24,7 @@ object AppDependencies {
 
     val disposableDao: DisposableDao by lazy { appDatabase.getDisposableDao() }
 
-    val additionalDao : AdditionalDao by lazy { appDatabase.getAdditionalDao() }
+    val streakDao : AdditionalDao by lazy { appDatabase.getAdditionalDao() }
 
-    val appRepository : AppRepository by lazy { AppRepository(dailyDao, disposableDao, additionalDao) }
+    val appRepository : AppRepository by lazy { AppRepository(dailyDao, disposableDao, streakDao) }
 }
