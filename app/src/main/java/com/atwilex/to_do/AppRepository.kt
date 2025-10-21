@@ -4,11 +4,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class AppRepository(private val dailyDao : DailyDao, private val disposableDao : DisposableDao,
-                    private val additionalDao: AdditionalDao) {
+                    private val streakDao: StreakDao) {
 
     //Daily Tab's functions
-    suspend fun insertNewDailyData(dailyDbEntity : DailyDbEntity) : Long{
-        return withContext(Dispatchers.IO) { dailyDao.insertNewData(dailyDbEntity) }
+    suspend fun insertDailyTask(dailyDbEntity : DailyDbEntity) : Long{
+        return withContext(Dispatchers.IO) { dailyDao.insertDailyTask(dailyDbEntity) }
     }
 
     suspend fun insertListOfTasks (taskList : List<DailyDbEntity>) {
@@ -40,15 +40,15 @@ class AppRepository(private val dailyDao : DailyDao, private val disposableDao :
     //Additional functions
 
     suspend fun getToday() : String? {
-        return withContext(Dispatchers.IO) { additionalDao.getToday() }
+        return withContext(Dispatchers.IO) { streakDao.getToday() }
     }
 
     suspend fun insertStreak(additionalDbEntity: AdditionalDbEntity){
-        withContext(Dispatchers.IO) { additionalDao.insertStreak(additionalDbEntity) }
+        withContext(Dispatchers.IO) { streakDao.insertStreak(additionalDbEntity) }
     }
 
     suspend fun getStreak() : Int {
-        return withContext(Dispatchers.IO) { additionalDao.getStreak() }
+        return withContext(Dispatchers.IO) { streakDao.getStreak() }
     }
 
     //Disposable Tab's functions

@@ -157,12 +157,12 @@ class DailyActivity : AppCompatActivity() {
             } else {
                 //Get items from database
                 today = appRepository.getToday()
-                val items = appRepository.getAnyDailyTasks(today as String)
+                var items = appRepository.getAnyDailyTasks(today as String)
 
                 //If today from db doesn't equals real today -> Update streak and edit items
                 if(today != LocalDate.now().toString()){
                     today = LocalDate.now().toString()
-                    //Get yesterday tasks
+                    //Add new streak
                     if(items.any {item -> item.state == 0L}){
                         //Update streak to 0
                         appRepository.insertStreak(AdditionalDbEntity(0L, 0, today as String))
@@ -172,11 +172,13 @@ class DailyActivity : AppCompatActivity() {
                     }
                     //Set 0 for all state in items
                     for (item in items){
-                        item.state = 0L
-                        item.day = today as String
+                        appRepository.insertDailyTask(DailyDbEntity(0, item.name, 0L, today as String, item.position))
                     }
-                    appRepository.insertListOfTasks(items)
+                    items = appRepository.getAnyDailyTasks(today as String)
                 }
+                val removedRange = taskList.size
+                taskList.clear()
+                adapter.notifyItemRangeRemoved(0, removedRange)
                 //Add new items
                 taskList.addAll(items)
                 //Adapter update
@@ -186,7 +188,6 @@ class DailyActivity : AppCompatActivity() {
             }
             streak.text = appRepository.getStreak().toString()
         }
-
 
 
         //Swapping logic in list
@@ -240,6 +241,7 @@ class DailyActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+
         //Return on the main activity
         buttonComeBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -250,10 +252,10 @@ class DailyActivity : AppCompatActivity() {
         //Create a new task
         buttonAdd.setOnClickListener {
             if (newTask.text.isNotBlank()){
-                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, LocalDate.now().minusDays(0).toString() ,taskList.size)
+                val newItem = DailyDbEntity(0, newTask.text.toString().trim(), 0L, LocalDate.now().toString() ,taskList.size)
                 taskList.add(newItem)
                 lifecycleScope.launch {
-                    taskList[taskList.size-1].id = appRepository.insertNewDailyData(newItem)
+                    taskList[taskList.size-1].id = appRepository.insertDailyTask(newItem)
                 }
                 newTask.text.clear()
                 //Adapter update

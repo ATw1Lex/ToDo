@@ -3,7 +3,7 @@ package com.atwilex.to_do
 import androidx.room.*
 
 @Dao
-interface AdditionalDao {
+interface StreakDao {
     //Insert new day
     @Insert
     fun insertStreak(additionalDbEntity: AdditionalDbEntity)

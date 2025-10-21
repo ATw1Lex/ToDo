@@ -2,7 +2,6 @@ package com.atwilex.to_do
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 
@@ -10,7 +9,7 @@ import androidx.room.Update
 @Dao
 interface DailyDao {
     @Insert()
-    fun insertNewData(dailyDbEntity: DailyDbEntity) : Long
+    fun insertDailyTask(dailyDbEntity: DailyDbEntity) : Long
 
     @Insert
     fun insertListOfTasks(taskList : List<DailyDbEntity>)

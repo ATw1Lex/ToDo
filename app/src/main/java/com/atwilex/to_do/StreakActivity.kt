@@ -1,10 +1,11 @@
 package com.atwilex.to_do
 
+import android.app.DatePickerDialog
 import android.content.Intent
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -84,12 +85,42 @@ class StreakActivity : AppCompatActivity() {
 
         //Open a dialog, for edit day
         day.setOnClickListener {
-            /*try {
-                val inflater = LayoutInflater.from(this)
+            try {
+                //Create today by calendar
+                val calendar = Calendar.getInstance()
+                val year = calendar.get(Calendar.YEAR)
+                val month = calendar.get(Calendar.MONTH)
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+                //Create listener, load task by day
+                val dateSetListener = DatePickerDialog.OnDateSetListener { view, selectedYear, selectedMonth, selectedDay ->
+                    today = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay)
+                    updateToday()
+                    lifecycleScope.launch {
+                        val items = appRepository.getAnyDailyTasks(today.toString())
+                        val removedRange = streakList.size
+                        streakList.clear()
+                        listAdapter.notifyItemRangeRemoved(0, removedRange)
+                        streakList.addAll(items)
+                        listAdapter.notifyItemRangeInserted(0, items.size)
+                    }
+                }
+
+                //Create dialog by context, style, listener, date
+                val datePickerDialog = DatePickerDialog(this, R.style.SpinnerDatePickerDialogTheme, dateSetListener, year, month, day)
+
+                //Create min date that user can select
+                val minDate = Calendar.getInstance()
+                minDate.set(2000, 0, 1)
+
+                //Set minDate
+                datePickerDialog.datePicker.minDate = minDate.timeInMillis
+
+                //Show dialog to user
+                datePickerDialog.show()
             }catch (e : Exception){
                 e.printStackTrace()
-            }*/
-            Toast.makeText(this, "The functional expected", Toast.LENGTH_SHORT).show()
+            }
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
