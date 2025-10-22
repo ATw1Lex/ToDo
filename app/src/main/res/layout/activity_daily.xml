@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00001B"
+    android:background="#FFFFFF"
     tools:context=".DailyActivity">
 
     <ImageButton
@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#00001B"
+        android:backgroundTint="#00FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_round_arrow_back" />
@@ -37,8 +37,8 @@
         android:ems="8"
         android:hint="@string/Enter_Hint"
         android:inputType="text"
-        android:textColor="#8177e4"
-        android:textColorHint="#8177e4"
+        android:textColor="#000000"
+        android:textColorHint="#803C3C3C"
         app:layout_constraintBottom_toTopOf="@+id/add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -63,7 +63,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="60dp"
         android:text="@string/Daily_Title"
-        android:textColor="#8177e4"
+        android:textColor="#000000"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.728"
@@ -79,6 +79,7 @@
         android:layout_marginBottom="20dp"
         android:text=""
         android:textSize="35sp"
+        android:textColor="#000000"
         app:layout_constraintBottom_toTopOf="@+id/ListDailyTasks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -104,8 +105,8 @@
         android:layout_height="88dp"
         android:layout_marginTop="6dp"
         android:backgroundTint="#00FFFFFF"
-        android:text=""
         android:src="@drawable/streak"
+        android:text=""
         app:layout_constraintEnd_toStartOf="@+id/title"
         app:layout_constraintStart_toEndOf="@+id/comeBack"
         app:layout_constraintTop_toTopOf="parent" />

@@ -23,6 +23,6 @@
         android:id="@+id/trash_bin"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:backgroundTint="#8177e4"
+        android:backgroundTint="#00FFFFFF"
         android:src="@drawable/trash_bin" />
 </LinearLayout>

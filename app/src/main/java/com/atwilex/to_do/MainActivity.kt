@@ -3,6 +3,7 @@ package com.atwilex.to_do
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,12 +19,15 @@ class MainActivity : AppCompatActivity() {
             AppDependencies.init(applicationContext)
         }
 
-        //resetSchedule(this)
-
         //Initialization
         val buttonDaily : Button = findViewById(R.id.daily)
         val buttonDisposable : Button = findViewById(R.id.disposable)
         val buttonGlobal : Button = findViewById(R.id.global)
+        val settingsButton : ImageButton = findViewById(R.id.settings)
+
+        settingsButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
 
         //Button to Daily Activity
         buttonDaily.setOnClickListener {
